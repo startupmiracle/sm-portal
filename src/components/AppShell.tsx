@@ -75,7 +75,14 @@ export default function AppShell() {
       <main className="flex-1">
         <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
           <div className="container flex h-14 items-center justify-between">
-            <Link to="/" className="font-semibold">SM Portal</Link>
+            <Link to="/" className="flex items-center gap-2">
+              <img
+                src="https://res.cloudinary.com/dy7cv4bih/image/upload/v1756175129/SM_-_logo-icon-transp_fhdqbi.png"
+                alt="Startup Miracle"
+                className="h-8 w-8"
+              />
+              <span className="font-semibold">Startup Miracle</span>
+            </Link>
             <div className="flex items-center gap-2">
               <Link to="/account" className="rounded-xl px-3 py-1.5 hover:bg-secondary">Account</Link>
             </div>
