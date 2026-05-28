@@ -440,7 +440,7 @@ function IntelligenceTab({ enriched }: { enriched: Record<string, string | numbe
                     <CardContent className="p-5">
                         <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-3">Website audit</div>
                         {enriched.website_screenshot_url && (
-                            <img src={String(enriched.website_screenshot_url)} alt="Website screenshot" className="w-full rounded-lg border border-zinc-200 mb-3" />
+                            <ZoomImage src={String(enriched.website_screenshot_url)} alt="Website screenshot" className="w-full rounded-lg border border-zinc-200 mb-3" />
                         )}
                         <p className="text-sm text-zinc-700 leading-relaxed">{String(enriched.website_analysis || "—")}</p>
                         {enriched.website_url && (
@@ -545,7 +545,7 @@ function SkillsTab({
                             </div>
                         </div>
                         <div className="md:w-80 flex-shrink-0">
-                            <img src="/images/claude-skills-upload.jpg" alt="Claude Desktop — Settings → Skills → Create a Skill → Upload a Skill" className="w-full rounded-lg border border-zinc-200 shadow-sm" />
+                            <ZoomImage src="/images/claude-skills-upload.jpg" alt="Claude Desktop — Settings → Skills → Create a Skill → Upload a Skill" className="w-full rounded-lg border border-zinc-200 shadow-sm" />
                         </div>
                     </div>
                 </CardContent>
@@ -655,7 +655,7 @@ function SetupGuideTab() {
                             Before — click Install
                         </div>
                         <Card className="overflow-hidden border-zinc-200">
-                            <img
+                            <ZoomImage
                                 src="/images/claude-plugin-before.jpg"
                                 alt="Small Business plugin install screen — click Install"
                                 className="w-full"
@@ -692,7 +692,7 @@ function SetupGuideTab() {
                                 Customize Home
                             </div>
                             <p className="text-xs text-zinc-500 mb-3">Connect apps, create skills, or browse plugins — all from one place.</p>
-                            <img src="/images/claude-customize-home.jpg" alt="Claude Customize home — Connect apps, Create skills, Browse plugins" className="w-full rounded-lg border border-zinc-200" />
+                            <ZoomImage src="/images/claude-customize-home.jpg" alt="Claude Customize home — Connect apps, Create skills, Browse plugins" className="w-full rounded-lg border border-zinc-200" />
                         </CardContent>
                     </Card>
                     <Card className="overflow-hidden">
@@ -702,7 +702,7 @@ function SetupGuideTab() {
                                 Skills Directory
                             </div>
                             <p className="text-xs text-zinc-500 mb-3">Browse and install individual skills by Anthropic and partners. Each one teaches Claude a new workflow.</p>
-                            <img src="/images/claude-skills-directory.jpg" alt="Claude Skills Directory — browsable skills like /canvas-design, /doc-coauthoring" className="w-full rounded-lg border border-zinc-200" />
+                            <ZoomImage src="/images/claude-skills-directory.jpg" alt="Claude Skills Directory — browsable skills like /canvas-design, /doc-coauthoring" className="w-full rounded-lg border border-zinc-200" />
                         </CardContent>
                     </Card>
                     <Card className="overflow-hidden">
@@ -712,7 +712,7 @@ function SetupGuideTab() {
                                 Connectors Directory
                             </div>
                             <p className="text-xs text-zinc-500 mb-3">Connect Claude to the apps you already use — Gmail, Slack, Google Drive, Canva, and more.</p>
-                            <img src="/images/claude-connectors-directory.jpg" alt="Claude Connectors — Canva, Gmail, Google Drive, Slack, Microsoft 365" className="w-full rounded-lg border border-zinc-200" />
+                            <ZoomImage src="/images/claude-connectors-directory.jpg" alt="Claude Connectors — Canva, Gmail, Google Drive, Slack, Microsoft 365" className="w-full rounded-lg border border-zinc-200" />
                         </CardContent>
                     </Card>
                     <Card className="overflow-hidden">
@@ -722,7 +722,7 @@ function SetupGuideTab() {
                                 Plugin Preview: Productivity
                             </div>
                             <p className="text-xs text-zinc-500 mb-3">Each plugin bundles skills and connectors. Here&apos;s the Productivity plugin with task management, memory, and more.</p>
-                            <img src="/images/claude-plugin-productivity.jpg" alt="Claude Productivity plugin — /memory-management, /start, /task-management, /update" className="w-full rounded-lg border border-zinc-200" />
+                            <ZoomImage src="/images/claude-plugin-productivity.jpg" alt="Claude Productivity plugin — /memory-management, /start, /task-management, /update" className="w-full rounded-lg border border-zinc-200" />
                         </CardContent>
                     </Card>
                 </div>
@@ -766,7 +766,7 @@ function SetupGuideTab() {
                                         <Badge className={`${c.bg} ${c.text} ${c.border} mb-3 w-fit text-[10px]`}>{plugin.badge}</Badge>
                                     )}
                                     {plugin.image && (
-                                        <img src={plugin.image} alt={plugin.name} className="w-full rounded-lg border border-zinc-200 mb-3" />
+                                        <ZoomImage src={plugin.image} alt={plugin.name} className="w-full rounded-lg border border-zinc-200 mb-3" />
                                     )}
                                     <h4 className="font-semibold text-zinc-900">{plugin.name}</h4>
                                     <p className="text-xs text-zinc-600 mt-1.5 leading-relaxed flex-1">{plugin.description}</p>
@@ -964,6 +964,40 @@ function AssessmentTab({ discoveryAnswers, savingDiscovery, onAnswer }: {
                 </CardContent>
             </Card>
         </div>
+    );
+}
+
+/* ════════════════════════════ LIGHTBOX ════════════════════════════ */
+
+function ZoomImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
+    const [open, setOpen] = useState(false);
+    return (
+        <>
+            <img
+                src={src}
+                alt={alt}
+                className={`${className || ""} cursor-zoom-in`}
+                onClick={() => setOpen(true)}
+            />
+            {open && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-zoom-out"
+                    onClick={() => setOpen(false)}
+                >
+                    <img
+                        src={src}
+                        alt={alt}
+                        className="max-w-full max-h-full rounded-xl shadow-2xl"
+                    />
+                    <button
+                        onClick={() => setOpen(false)}
+                        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+            )}
+        </>
     );
 }
 
