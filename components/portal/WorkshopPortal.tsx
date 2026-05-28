@@ -239,6 +239,17 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                             <LayoutDashboard className="w-4 h-4" />
                             AI Assessment
                         </a>
+                        <button
+                            onClick={() => { setActiveTab("questions"); setMobileMenuOpen(false); }}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                                activeTab === "questions"
+                                    ? "bg-emerald-50 text-emerald-700 font-medium"
+                                    : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+                            }`}
+                        >
+                            <HelpCircle className="w-4 h-4" />
+                            Questions?
+                        </button>
 
                         <Link href="/workshops" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-zinc-500 hover:bg-zinc-50 mt-4 transition-colors">
                             &larr; My Workshops
