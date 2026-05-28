@@ -125,7 +125,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
 
     const fullName = [lead.first_name, lead.last_name].filter(Boolean).join(" ") || "there";
     const recommendations = (lead.recommendations as Record<string, unknown>) || {};
-    const enriched = (lead.enriched_data as Record<string, unknown>) || {};
+    const enriched = (lead.enriched_data || {}) as Record<string, string | number | null>;
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: "#faf9f5" }}>
@@ -209,7 +209,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                         title="What we found out about you"
                         subtitle="Startup Miracle enrichment based on your industry, company, and answers"
                     />
-                    {Object.keys(enriched).length === 0 ? (
+                    {!enriched.enrichment_status ? (
                         <Card className="border-dashed border-zinc-300">
                             <CardContent className="py-8 text-center">
                                 <p className="text-sm text-zinc-500">
@@ -219,13 +219,135 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                             </CardContent>
                         </Card>
                     ) : (
-                        <Card>
-                            <CardContent className="p-6">
-                                <pre className="text-xs text-zinc-700 whitespace-pre-wrap font-mono">
-                                    {JSON.stringify(enriched, null, 2)}
-                                </pre>
-                            </CardContent>
-                        </Card>
+                        <div className="space-y-4">
+                            {/* Bio + Score */}
+                            <div className="grid md:grid-cols-3 gap-4">
+                                <Card className="md:col-span-2">
+                                    <CardContent className="p-5">
+                                        <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-3">About you</div>
+                                        <p className="text-sm text-zinc-700 leading-relaxed">{String(enriched.person_bio || "—")}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-emerald-50 border-emerald-200">
+                                    <CardContent className="p-5 flex flex-col items-center justify-center text-center">
+                                        <div className="text-4xl font-bold text-emerald-700">{Number(enriched.lead_score) || 0}</div>
+                                        <div className="text-xs text-emerald-600 font-medium mt-1">Lead Score</div>
+                                        <div className="text-[10px] text-emerald-500 mt-0.5">out of 10</div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            {/* Company + Website */}
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <Card>
+                                    <CardContent className="p-5">
+                                        <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-3">Company overview</div>
+                                        <p className="text-sm text-zinc-700 leading-relaxed mb-3">{String(enriched.company_description || "—")}</p>
+                                        {enriched.services && (
+                                            <>
+                                                <div className="text-xs font-medium text-zinc-500 mt-3 mb-1.5">Services</div>
+                                                <p className="text-sm text-zinc-700">{String(enriched.services)}</p>
+                                            </>
+                                        )}
+                                        {enriched.ideal_customers && (
+                                            <>
+                                                <div className="text-xs font-medium text-zinc-500 mt-3 mb-1.5">Ideal customers</div>
+                                                <p className="text-sm text-zinc-700">{String(enriched.ideal_customers)}</p>
+                                            </>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardContent className="p-5">
+                                        <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-3">Website audit</div>
+                                        {enriched.website_screenshot_url && (
+                                            <img
+                                                src={String(enriched.website_screenshot_url)}
+                                                alt="Website screenshot"
+                                                className="w-full rounded-lg border border-zinc-200 mb-3"
+                                            />
+                                        )}
+                                        <p className="text-sm text-zinc-700 leading-relaxed">{String(enriched.website_analysis || "—")}</p>
+                                        {enriched.website_url && (
+                                            <a
+                                                href={String(enriched.website_url)}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 text-xs text-emerald-600 font-medium mt-2 hover:underline"
+                                            >
+                                                Visit site &rarr;
+                                            </a>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            {/* Marketing angle */}
+                            {enriched.marketing_angle && (
+                                <QuoteCard
+                                    label="Our marketing angle for you"
+                                    quote={String(enriched.marketing_angle)}
+                                />
+                            )}
+
+                            {/* Social links */}
+                            {(enriched.linkedin_url || enriched.twitter_url || enriched.instagram_url) && (
+                                <div className="flex items-center gap-3 flex-wrap">
+                                    {enriched.linkedin_url && (
+                                        <a href={String(enriched.linkedin_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium hover:bg-blue-100 transition-colors">
+                                            LinkedIn
+                                        </a>
+                                    )}
+                                    {enriched.twitter_url && (
+                                        <a href={String(enriched.twitter_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-700 text-xs font-medium hover:bg-zinc-200 transition-colors">
+                                            X / Twitter
+                                        </a>
+                                    )}
+                                    {enriched.instagram_url && (
+                                        <a href={String(enriched.instagram_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-50 text-pink-700 text-xs font-medium hover:bg-pink-100 transition-colors">
+                                            Instagram
+                                        </a>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* AI Recommendations */}
+                            {enriched.ai_recommendations && (
+                                <Card className="border-emerald-200">
+                                    <CardContent className="p-5">
+                                        <div className="text-xs uppercase tracking-wider text-emerald-600 font-medium mb-3">AI Recommendations</div>
+                                        {(() => {
+                                            try {
+                                                const recs = typeof enriched.ai_recommendations === "string"
+                                                    ? JSON.parse(String(enriched.ai_recommendations))
+                                                    : enriched.ai_recommendations;
+                                                if (!Array.isArray(recs)) return null;
+                                                return (
+                                                    <div className="space-y-4">
+                                                        {recs.map((rec: { title?: string; tool?: string; description?: string; weekend_plan?: string }, i: number) => (
+                                                            <div key={i}>
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <h4 className="text-sm font-semibold text-zinc-900">{rec.title}</h4>
+                                                                    {rec.tool && <Badge className="bg-violet-50 text-violet-700 border-violet-200 text-[10px]">{rec.tool}</Badge>}
+                                                                </div>
+                                                                <p className="text-sm text-zinc-600 leading-relaxed">{rec.description}</p>
+                                                                {rec.weekend_plan && (
+                                                                    <div className="mt-2 p-3 bg-zinc-50 rounded-lg text-xs text-zinc-600 whitespace-pre-line">
+                                                                        <span className="font-medium text-zinc-700">Weekend plan:</span> {rec.weekend_plan}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                );
+                                            } catch {
+                                                return <p className="text-sm text-zinc-600">{String(enriched.ai_recommendations || "")}</p>;
+                                            }
+                                        })()}
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </div>
                     )}
                 </section>
 

@@ -3,10 +3,14 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, LogOut, Calendar, Users } from "lucide-react";
+import { Sparkles, LogOut, Calendar, Users, Building2 } from "lucide-react";
 
 const SM_LOGO_URL =
   "https://res.cloudinary.com/dy7cv4bih/image/upload/v1756175129/SM_-_logo-icon-transp_fhdqbi.png";
+
+const WORKSHOP_NAMES: Record<string, { name: string; partner: string }> = {
+  "claude-smb-area": { name: "Claude SMB Workshop", partner: "Area Centre" },
+};
 
 export default async function WorkshopsPage() {
   const supabase = await createClient();
@@ -14,29 +18,36 @@ export default async function WorkshopsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Fetch the participant's workshop enrollment(s)
   const { data: leads } = await supabase
     .from("leads_workshop")
-    .select("id, first_name, last_name, company_name, workshop_slug, workshop_name, created_at, ai_stage")
+    .select("id, first_name, last_name, company_name, workshop_slug, created_at, ai_stage, source")
     .ilike("email", user?.email || "");
 
   const firstName = leads?.[0]?.first_name || user?.email?.split("@")[0] || "there";
 
-  // For now, we have one workshop — Claude SMB
   const workshops = leads?.length
-    ? leads.map((lead) => ({
-        slug: lead.workshop_slug || "claude-smb-may-2026",
-        name: lead.workshop_name || "Claude SMB Workshop",
-        partner: "Area Centre",
-        date: lead.created_at ? new Date(lead.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "May 28, 2026",
-        company: lead.company_name,
-        aiStage: lead.ai_stage,
-      }))
+    ? leads.map((lead) => {
+        const slug = lead.workshop_slug || "claude-smb-area";
+        const meta = WORKSHOP_NAMES[slug] || { name: "Workshop", partner: "" };
+        return {
+          slug,
+          name: meta.name,
+          partner: meta.partner,
+          date: lead.created_at
+            ? new Date(lead.created_at).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "",
+          company: lead.company_name,
+          aiStage: lead.ai_stage,
+        };
+      })
     : [];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#faf9f5" }}>
-      {/* Header */}
       <header className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -58,10 +69,13 @@ export default async function WorkshopsPage() {
 
       <main className="mx-auto max-w-4xl px-6 py-10">
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-medium mb-4">
-            <Sparkles className="w-3.5 h-3.5" /> Welcome back
-          </div>
-          <h1 className="text-3xl font-semibold text-zinc-900 tracking-tight">
+          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-4">
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Welcome back
+          </Badge>
+          <h1
+            className="text-3xl font-semibold text-zinc-900 tracking-tight"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
             Hey, {firstName}.
           </h1>
           <p className="mt-2 text-zinc-600">
@@ -89,7 +103,7 @@ export default async function WorkshopsPage() {
           <div className="grid gap-4">
             {workshops.map((w) => (
               <Link key={w.slug} href={`/workshops/${w.slug}`}>
-                <Card className="border-zinc-200 hover:border-zinc-300 hover:shadow-sm transition-all cursor-pointer">
+                <Card className="border-zinc-200 hover:border-emerald-200 hover:shadow-md transition-all cursor-pointer">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div>
@@ -107,7 +121,7 @@ export default async function WorkshopsPage() {
                     <div className="flex items-center gap-4 text-sm text-zinc-500">
                       {w.company && (
                         <span className="flex items-center gap-1.5">
-                          <Users className="w-3.5 h-3.5" />
+                          <Building2 className="w-3.5 h-3.5" />
                           {w.company}
                         </span>
                       )}

@@ -8,7 +8,7 @@ export default async function WorkshopDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  await params;
   const supabase = await createClient();
 
   const {
@@ -19,9 +19,7 @@ export default async function WorkshopDetailPage({
 
   const { data: lead, error } = await supabase
     .from("leads_workshop")
-    .select(
-      "id, email, first_name, last_name, company_name, job_title, role, company_size, company_industry, business_task, ai_dream, ai_stage, enriched_data, recommendations, discovery_answers"
-    )
+    .select("*")
     .ilike("email", user.email || "")
     .maybeSingle();
 
@@ -35,5 +33,43 @@ export default async function WorkshopDetailPage({
     .update({ portal_visited_at: new Date().toISOString() })
     .eq("id", lead.id);
 
-  return <WorkshopPortal lead={lead as WorkshopLead} />;
+  // Map the flat enrichment columns into the enriched_data object for the portal
+  const enrichedLead: WorkshopLead = {
+    id: lead.id,
+    email: lead.email,
+    first_name: lead.first_name,
+    last_name: lead.last_name,
+    company_name: lead.company_name,
+    job_title: lead.job_title,
+    role: lead.role,
+    company_size: lead.company_size,
+    company_industry: lead.company_industry,
+    business_task: lead.business_task,
+    ai_dream: lead.ai_dream,
+    ai_stage: lead.ai_stage,
+    discovery_answers: lead.discovery_answers || {},
+    recommendations: lead.recommendations || {},
+    enriched_data: {
+      person_bio: lead.person_bio,
+      company_description: lead.company_description,
+      services: lead.services,
+      ideal_customers: lead.ideal_customers,
+      marketing_angle: lead.marketing_angle,
+      website_url: lead.website_url,
+      website_status: lead.website_status,
+      website_analysis: lead.website_analysis,
+      website_screenshot_url: lead.website_screenshot_url,
+      linkedin_url: lead.linkedin_url,
+      twitter_url: lead.twitter_url,
+      instagram_url: lead.instagram_url,
+      facebook_url: lead.facebook_url,
+      youtube_url: lead.youtube_url,
+      ai_recommendations: lead.ai_recommendations,
+      lead_score: lead.lead_score,
+      enrichment_status: lead.enrichment_status,
+      enriched_at: lead.enriched_at,
+    },
+  };
+
+  return <WorkshopPortal lead={enrichedLead} />;
 }
