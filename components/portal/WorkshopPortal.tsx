@@ -400,17 +400,19 @@ function ProfileTab({ lead, enriched, fullName }: { lead: WorkshopLead; enriched
                             <LifeBuoy className="w-8 h-8 text-emerald-600 mb-3" />
                             <h3 className="font-semibold text-zinc-900 text-lg">Technical Call</h3>
                             <p className="text-sm text-zinc-600 mt-2 leading-relaxed">
-                                90-min hands-on session. We set up your AI stack together — Claude, CRM, automations. You leave with working tools, not slides.
+                                You&apos;re working to set up your business presence and processes (Marketing, Sales, Claude, Hermes AI Agent, VAPI, Retell or Eleven Labs Voice Agent), and need help with a specific process. I can help you gain clarity and troubleshoot during a 90-min hands-on session. You leave with working tools, not slides.
                             </p>
                             <div className="mt-4 flex items-baseline gap-2">
                                 <span className="text-2xl font-bold text-zinc-900">$450</span>
                                 <span className="text-xs text-zinc-500">includes recording + memo</span>
                             </div>
                             <a
-                                href="mailto:javier@startupmiracle.com?subject=Technical Call — Workshop Portal&body=Hi Javier, I'd like to book a technical call."
+                                href="https://buy.stripe.com/test_dRm4gA5RU802en314d0kE01"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
                             >
-                                Book a call
+                                Book &amp; Pay
                                 <ExternalLink className="w-3.5 h-3.5" />
                             </a>
                         </CardContent>
