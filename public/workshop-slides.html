@@ -1085,11 +1085,11 @@
 <div class="nav-bar">
   <div class="progress-bar" id="progressBar" style="width:0%;"></div>
   <div class="nav-controls">
-    <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>&larr; Atrás</button>
+    <button class="nav-btn" id="prevBtn" disabled>&larr; Atrás</button>
   </div>
   <span class="slide-counter" id="slideCounter">1 / 15</span>
   <div class="nav-controls">
-    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Siguiente &rarr;</button>
+    <button class="nav-btn" id="nextBtn">Siguiente &rarr;</button>
   </div>
 </div>
 
@@ -1116,6 +1116,9 @@
 
   function nextSlide() { goToSlide(currentSlide + 1); }
   function prevSlide() { goToSlide(currentSlide - 1); }
+
+  document.getElementById('prevBtn').addEventListener('click', prevSlide);
+  document.getElementById('nextBtn').addEventListener('click', nextSlide);
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
