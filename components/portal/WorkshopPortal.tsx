@@ -65,10 +65,10 @@ type Tab = "profile" | "intelligence" | "skills" | "setup" | "tools" | "assessme
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "profile", label: "Your Profile", icon: <User className="w-4 h-4" /> },
     { id: "intelligence", label: "Intelligence", icon: <Sparkles className="w-4 h-4" /> },
+    { id: "assessment", label: "Self-Assessment", icon: <ClipboardList className="w-4 h-4" /> },
     { id: "setup", label: "Setup Guide", icon: <BookOpen className="w-4 h-4" /> },
     { id: "skills", label: "Skills Library", icon: <Download className="w-4 h-4" /> },
     { id: "tools", label: "Recommended Tools", icon: <Wrench className="w-4 h-4" /> },
-    { id: "assessment", label: "Self-Assessment", icon: <ClipboardList className="w-4 h-4" /> },
 ];
 
 const VALID_TABS = new Set<string>(["profile", "intelligence", "skills", "setup", "tools", "assessment"]);
@@ -278,7 +278,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                         />
                     )}
                     {activeTab === "setup" && <SetupGuideTab />}
-                    {activeTab === "tools" && <ToolsTab />}
+                    {activeTab === "tools" && <ToolsTab onNavigate={setActiveTab} />}
                     {activeTab === "assessment" && (
                         <AssessmentTab
                             discoveryAnswers={discoveryAnswers}
@@ -907,7 +907,7 @@ function SetupGuideTab() {
     );
 }
 
-function ToolsTab() {
+function ToolsTab({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
     return (
         <div className="space-y-6">
             <div>
@@ -931,7 +931,7 @@ function ToolsTab() {
                                 <h3 className="font-semibold text-zinc-900">{tool.name}</h3>
                                 <p className="text-sm text-zinc-600 mt-2 leading-relaxed">{tool.description}</p>
                                 {tool.url === "#skills" ? (
-                                    <button className={`mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium ${c.bg} ${c.text} hover:opacity-80 transition-opacity`}>
+                                    <button onClick={() => onNavigate("skills")} className={`mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium ${c.bg} ${c.text} hover:opacity-80 transition-opacity`}>
                                         {tool.cta}
                                     </button>
                                 ) : (
