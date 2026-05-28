@@ -42,6 +42,14 @@ import {
     type DiscoveryValue,
 } from "@/lib/skills/templates";
 import { createClient } from "@/utils/supabase/client";
+import {
+    Label,
+    PolarGrid,
+    PolarRadiusAxis,
+    RadialBar,
+    RadialBarChart,
+} from "recharts";
+import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 
 const SM_LOGO_URL =
     "https://res.cloudinary.com/dy7cv4bih/image/upload/v1756175129/SM_-_logo-icon-transp_fhdqbi.png";
@@ -984,6 +992,29 @@ function AssessmentTab({ discoveryAnswers, savingDiscovery, onAnswer, enriched, 
         autoSuggestions.crm = { value: "yes", reason: "You mentioned CRM in your registration" };
     }
 
+    // Scoring: yes = 10, unsure = 5, no = 0. Include auto-suggestions for unanswered.
+    const totalQuestions = DISCOVERY_QUESTIONS.length;
+    const maxScore = totalQuestions * 10;
+    let answeredCount = 0;
+    let score = 0;
+    for (const q of DISCOVERY_QUESTIONS) {
+        const val = discoveryAnswers[q.key] || autoSuggestions[q.key]?.value;
+        if (val) {
+            answeredCount++;
+            if (val === "yes") score += 10;
+            else if (val === "unsure") score += 5;
+        }
+    }
+    const pct = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+    const endAngle = (pct / 100) * 360;
+    const scoreColor = pct >= 70 ? "hsl(152, 76%, 36%)" : pct >= 40 ? "hsl(45, 93%, 47%)" : "hsl(0, 72%, 51%)";
+    const scoreLabel = pct >= 70 ? "Strong" : pct >= 40 ? "Getting there" : "Needs work";
+
+    const chartConfig: ChartConfig = {
+        score: { label: "Score", color: scoreColor },
+    };
+    const chartData = [{ name: "score", value: pct, fill: scoreColor }];
+
     return (
         <div className="space-y-6">
             <div>
@@ -998,53 +1029,140 @@ function AssessmentTab({ discoveryAnswers, savingDiscovery, onAnswer, enriched, 
                     </div>
                 )}
             </div>
-            <Card>
-                <CardContent className="p-0 divide-y divide-zinc-100">
-                    {DISCOVERY_QUESTIONS.map((q) => {
-                        const current = discoveryAnswers[q.key];
-                        const suggestion = autoSuggestions[q.key];
-                        const displayValue = current || suggestion?.value;
 
-                        return (
-                            <div key={q.key} className="p-5">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex-1">
-                                        <div className="font-medium text-zinc-900 text-sm">{q.label}</div>
-                                        <div className="text-xs text-zinc-500 mt-1">{q.description}</div>
-                                        {suggestion && !current && (
-                                            <div className="mt-1.5 text-[11px] text-emerald-600 flex items-center gap-1">
-                                                <Sparkles className="w-3 h-3" />
-                                                {suggestion.reason}
+            <div className="flex flex-col lg:flex-row gap-6">
+                {/* Questions — 70% */}
+                <div className="flex-1 min-w-0 lg:w-[70%]">
+                    <Card>
+                        <CardContent className="p-0 divide-y divide-zinc-100">
+                            {DISCOVERY_QUESTIONS.map((q) => {
+                                const current = discoveryAnswers[q.key];
+                                const suggestion = autoSuggestions[q.key];
+                                const displayValue = current || suggestion?.value;
+
+                                return (
+                                    <div key={q.key} className="p-5">
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div className="flex-1">
+                                                <div className="font-medium text-zinc-900 text-sm">{q.label}</div>
+                                                <div className="text-xs text-zinc-500 mt-1">{q.description}</div>
+                                                {suggestion && !current && (
+                                                    <div className="mt-1.5 text-[11px] text-emerald-600 flex items-center gap-1">
+                                                        <Sparkles className="w-3 h-3" />
+                                                        {suggestion.reason}
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
+                                            <div className="flex gap-2">
+                                                {(["yes", "no", "unsure"] as DiscoveryValue[]).map((v) => (
+                                                    <button key={v} onClick={() => onAnswer(q.key, v)}
+                                                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                                                            displayValue === v
+                                                                ? v === "yes"
+                                                                    ? current ? "bg-emerald-600 text-white" : "bg-emerald-400 text-white ring-1 ring-emerald-300 ring-offset-1"
+                                                                    : v === "no"
+                                                                    ? current ? "bg-rose-600 text-white" : "bg-rose-400 text-white ring-1 ring-rose-300 ring-offset-1"
+                                                                    : current ? "bg-zinc-600 text-white" : "bg-zinc-400 text-white ring-1 ring-zinc-300 ring-offset-1"
+                                                                : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                                                        }`}>
+                                                        {v}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex gap-2">
-                                        {(["yes", "no", "unsure"] as DiscoveryValue[]).map((v) => (
-                                            <button key={v} onClick={() => onAnswer(q.key, v)}
-                                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                                                    displayValue === v
-                                                        ? v === "yes"
-                                                            ? current ? "bg-emerald-600 text-white" : "bg-emerald-400 text-white ring-1 ring-emerald-300 ring-offset-1"
-                                                            : v === "no"
-                                                            ? current ? "bg-rose-600 text-white" : "bg-rose-400 text-white ring-1 ring-rose-300 ring-offset-1"
-                                                            : current ? "bg-zinc-600 text-white" : "bg-zinc-400 text-white ring-1 ring-zinc-300 ring-offset-1"
-                                                        : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                                                }`}>
-                                                {v}
-                                            </button>
-                                        ))}
+                                );
+                            })}
+                            {savingDiscovery && (
+                                <div className="px-5 py-3 text-xs text-zinc-500 flex items-center gap-2">
+                                    <Loader2 className="w-3 h-3 animate-spin" /> Saving...
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Score — 30% */}
+                <div className="lg:w-[30%] flex-shrink-0">
+                    <div className="sticky top-20">
+                        <Card>
+                            <CardContent className="p-5 flex flex-col items-center">
+                                <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-2">Your Readiness Score</div>
+                                <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[200px] w-full">
+                                    <RadialBarChart
+                                        data={chartData}
+                                        startAngle={90}
+                                        endAngle={90 - endAngle}
+                                        outerRadius={85}
+                                        innerRadius={70}
+                                    >
+                                        <PolarGrid
+                                            gridType="circle"
+                                            radialLines={false}
+                                            stroke="none"
+                                            className="first:fill-muted last:fill-background"
+                                            polarRadius={[85, 70]}
+                                        />
+                                        <RadialBar dataKey="value" background cornerRadius={10} />
+                                        <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+                                            <Label
+                                                content={({ viewBox }) => {
+                                                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                                        return (
+                                                            <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                                                                <tspan x={viewBox.cx} y={(viewBox.cy || 0) - 8} className="fill-foreground text-3xl font-bold">
+                                                                    {score}
+                                                                </tspan>
+                                                                <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 14} className="fill-muted-foreground text-xs">
+                                                                    / {maxScore}
+                                                                </tspan>
+                                                            </text>
+                                                        );
+                                                    }
+                                                }}
+                                            />
+                                        </PolarRadiusAxis>
+                                    </RadialBarChart>
+                                </ChartContainer>
+
+                                <div className="text-center mt-2">
+                                    <div className="text-sm font-semibold" style={{ color: scoreColor }}>{scoreLabel}</div>
+                                    <div className="text-xs text-zinc-500 mt-0.5">{answeredCount} of {totalQuestions} answered</div>
+                                </div>
+
+                                <div className="w-full h-px bg-zinc-100 my-4" />
+
+                                <div className="w-full space-y-2 text-xs">
+                                    <div className="flex justify-between text-zinc-600">
+                                        <span>Yes answers</span>
+                                        <span className="font-medium text-emerald-600">
+                                            {DISCOVERY_QUESTIONS.filter(q => (discoveryAnswers[q.key] || autoSuggestions[q.key]?.value) === "yes").length} x 10pts
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between text-zinc-600">
+                                        <span>Unsure answers</span>
+                                        <span className="font-medium text-amber-600">
+                                            {DISCOVERY_QUESTIONS.filter(q => (discoveryAnswers[q.key] || autoSuggestions[q.key]?.value) === "unsure").length} x 5pts
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between text-zinc-600">
+                                        <span>No answers</span>
+                                        <span className="font-medium text-rose-600">
+                                            {DISCOVERY_QUESTIONS.filter(q => (discoveryAnswers[q.key] || autoSuggestions[q.key]?.value) === "no").length} x 0pts
+                                        </span>
                                     </div>
                                 </div>
-                            </div>
-                        );
-                    })}
-                    {savingDiscovery && (
-                        <div className="px-5 py-3 text-xs text-zinc-500 flex items-center gap-2">
-                            <Loader2 className="w-3 h-3 animate-spin" /> Saving...
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+
+                                <div className="w-full h-px bg-zinc-100 my-4" />
+
+                                <p className="text-[11px] text-zinc-400 text-center leading-relaxed">
+                                    Every &ldquo;no&rdquo; becomes a project in your 30/60/90 plan. Every &ldquo;yes&rdquo; is a foundation to build on.
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
