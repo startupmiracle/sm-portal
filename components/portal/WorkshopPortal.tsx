@@ -174,7 +174,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                 {/* Sidebar */}
                 <aside className={`
                     fixed inset-y-0 left-0 z-20 w-64 bg-white border-r border-zinc-200 pt-[57px] transform transition-transform duration-200
-                    lg:relative lg:translate-x-0 lg:pt-0
+                    lg:sticky lg:top-[57px] lg:translate-x-0 lg:pt-0 lg:h-[calc(100vh-57px)] lg:flex-shrink-0
                     ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
                 `}>
                     <div className="p-4 space-y-1 overflow-y-auto h-[calc(100%-60px)] pb-4">
