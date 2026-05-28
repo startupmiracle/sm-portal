@@ -30,6 +30,9 @@ import {
     Globe,
     Menu,
     X,
+    Presentation,
+    Maximize2,
+    Minimize2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -69,9 +72,10 @@ const COLOR_MAP: Record<string, { bg: string; text: string; border: string }> = 
     indigo: { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
 };
 
-type Tab = "profile" | "intelligence" | "skills" | "setup" | "tools" | "assessment";
+type Tab = "deck" | "profile" | "intelligence" | "skills" | "setup" | "tools" | "assessment";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    { id: "deck", label: "Slide Deck", icon: <Presentation className="w-4 h-4" /> },
     { id: "profile", label: "Your Profile", icon: <User className="w-4 h-4" /> },
     { id: "intelligence", label: "Intelligence", icon: <Sparkles className="w-4 h-4" /> },
     { id: "assessment", label: "Self-Assessment", icon: <ClipboardList className="w-4 h-4" /> },
@@ -80,10 +84,10 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "tools", label: "Recommended Tools", icon: <Wrench className="w-4 h-4" /> },
 ];
 
-const VALID_TABS = new Set<string>(["profile", "intelligence", "skills", "setup", "tools", "assessment"]);
+const VALID_TABS = new Set<string>(["deck", "profile", "intelligence", "skills", "setup", "tools", "assessment"]);
 
 export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
-    const [activeTab, setActiveTabState] = useState<Tab>("profile");
+    const [activeTab, setActiveTabState] = useState<Tab>("deck");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const setActiveTab = useCallback((tab: Tab) => {
@@ -303,6 +307,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                             onCopy={copySkill}
                         />
                     )}
+                    {activeTab === "deck" && <DeckTab />}
                     {activeTab === "setup" && <SetupGuideTab />}
                     {activeTab === "tools" && <ToolsTab onNavigate={setActiveTab} />}
                     {activeTab === "assessment" && (
@@ -321,6 +326,75 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
 }
 
 /* ════════════════════════════════ TABS ════════════════════════════════ */
+
+function DeckTab() {
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const iframeRef = useCallback((node: HTMLIFrameElement | null) => {
+        if (node) node.focus();
+    }, []);
+
+    const toggleFullscreen = () => setIsFullscreen((prev) => !prev);
+
+    useEffect(() => {
+        if (!isFullscreen) return;
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setIsFullscreen(false);
+        };
+        document.addEventListener("keydown", handleEsc);
+        return () => document.removeEventListener("keydown", handleEsc);
+    }, [isFullscreen]);
+
+    if (isFullscreen) {
+        return (
+            <div className="fixed inset-0 z-50 bg-black">
+                <button
+                    onClick={toggleFullscreen}
+                    className="absolute top-4 right-4 z-50 bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg backdrop-blur-sm transition-colors"
+                    title="Salir de pantalla completa (Esc)"
+                >
+                    <Minimize2 className="w-5 h-5" />
+                </button>
+                <iframe
+                    ref={iframeRef}
+                    src="/workshop-slides.html"
+                    className="w-full h-full border-0"
+                    title="Workshop Slide Deck"
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-xl font-bold text-gray-900">Slide Deck</h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                        Workshop presentation &mdash; usa las flechas o swipe para navegar.
+                    </p>
+                </div>
+                <button
+                    onClick={toggleFullscreen}
+                    className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                    <Maximize2 className="w-4 h-4" />
+                    Presentation Mode
+                </button>
+            </div>
+            <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-sm" style={{ aspectRatio: "16/9" }}>
+                <iframe
+                    ref={iframeRef}
+                    src="/workshop-slides.html"
+                    className="w-full h-full border-0"
+                    title="Workshop Slide Deck"
+                />
+            </div>
+            <p className="text-xs text-gray-400 text-center">
+                Tip: haz clic en &quot;Presentation Mode&quot; para pantalla completa, o presiona Esc para salir.
+            </p>
+        </div>
+    );
+}
 
 function ProfileTab({ lead, enriched, fullName }: { lead: WorkshopLead; enriched: Record<string, string | number | null>; fullName: string }) {
     return (

@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA para Tu Negocio — Startup Miracle Workshop</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #0a0e1a;
+    --primary: #2d6a4f;
+    --primary-light: #40916c;
+    --primary-dark: #1b4332;
+    --light: #faf8f5;
+    --gold: #d4a017;
+    --cream: #f0ece6;
+    --danger: #e74c3c;
+    --success: #27ae60;
+    --blue: #3498db;
+    --purple: #8e44ad;
+    --orange: #e67e22;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--dark);
+    color: var(--light);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+  .slide.exit-left { opacity: 0; transform: translateX(-60px); }
+
+  /* Slide with no padding for full-bleed */
+  .slide.no-pad { padding: 0; }
+
+  .bg-dark { background: var(--dark); }
+  .bg-gradient { background: linear-gradient(135deg, var(--dark) 0%, #0f1a2e 50%, var(--primary-dark) 100%); }
+  .bg-primary { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%); }
+  .bg-cream { background: var(--cream); color: var(--dark); }
+  .bg-light { background: var(--light); color: var(--dark); }
+  .bg-gold-accent { background: linear-gradient(135deg, var(--dark) 0%, #1a1408 50%, #0a0e1a 100%); }
+  .bg-warm { background: linear-gradient(135deg, #faf8f5 0%, #f0ece6 100%); color: var(--dark); }
+
+  h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
+  h2 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: 16px; letter-spacing: -0.5px; }
+  h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 12px; }
+  .subtitle { font-size: 1.25rem; font-weight: 400; opacity: 0.85; max-width: 700px; line-height: 1.6; }
+  .serif { font-family: 'Cormorant Garamond', serif; font-style: italic; }
+  .text-primary { color: var(--primary-light); }
+  .text-gold { color: var(--gold); }
+  .text-danger { color: var(--danger); }
+  .text-emerald-dark { color: var(--primary); }
+
+  /* 50/50 split layout */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+  }
+  .split-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 56px;
+  }
+  .split-image {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    min-height: 100%;
+  }
+  .split-image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 32px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 28px;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--gold));
+  }
+  /* Light stat card */
+  .stat-card.light-stat {
+    background: white;
+    border-color: rgba(0,0,0,0.08);
+    color: var(--dark);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .stat-number.danger-num {
+    background: linear-gradient(135deg, var(--danger), var(--orange));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .stat-label { font-size: 0.92rem; opacity: 0.8; font-weight: 500; }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 20px;
+  }
+  .content-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  .content-card:hover { transform: translateY(-4px); border-color: rgba(45,106,79,0.4); }
+  .content-card.light-card {
+    background: white;
+    border-color: rgba(0,0,0,0.08);
+    color: var(--dark);
+  }
+  .content-card.light-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); border-color: var(--primary); }
+  .card-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+  .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+  .card-body { font-size: 0.9rem; opacity: 0.8; line-height: 1.6; }
+
+  /* Comparison table */
+  .comparison-table {
+    width: 100%;
+    max-width: 1050px;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .comparison-table th {
+    background: rgba(255,255,255,0.1);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+  }
+  .comparison-table td {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    vertical-align: top;
+  }
+  .comparison-table tr:last-child td { border-bottom: none; }
+  .comparison-table .feature { font-weight: 600; opacity: 0.9; }
+  .comparison-table .claude-col { background: rgba(45,106,79,0.1); }
+  .comparison-table .chatgpt-col { background: rgba(255,255,255,0.03); }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-green { background: rgba(39,174,96,0.2); color: #27ae60; }
+  .badge-red { background: rgba(231,76,60,0.2); color: #e74c3c; }
+  .badge-gold { background: rgba(212,160,23,0.2); color: var(--gold); }
+  .badge-blue { background: rgba(52,152,219,0.2); color: var(--blue); }
+  .badge-orange { background: rgba(230,126,34,0.2); color: var(--orange); }
+
+  .winner-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .winner-claude { background: rgba(45,106,79,0.25); color: var(--primary-light); }
+  .winner-openai { background: rgba(230,126,34,0.25); color: var(--orange); }
+  .winner-tie { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+
+  .bar-chart { width: 100%; max-width: 700px; margin-top: 20px; }
+  .bar-row { display: flex; align-items: center; margin-bottom: 14px; gap: 14px; }
+  .bar-label { flex: 0 0 220px; font-size: 0.88rem; font-weight: 500; text-align: right; }
+  .bar-track { flex: 1; height: 34px; background: rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden; }
+  .bar-fill {
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: white;
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .bar-fill.emerald { background: linear-gradient(90deg, var(--primary-dark), var(--primary-light)); }
+  .bar-fill.gold { background: linear-gradient(90deg, #b8860b, var(--gold)); }
+  .bar-fill.blue { background: linear-gradient(90deg, #2980b9, var(--blue)); }
+  .bar-fill.purple { background: linear-gradient(90deg, #6c3483, var(--purple)); }
+
+  /* Light bar variants */
+  .bar-track.light-track { background: rgba(0,0,0,0.06); }
+
+  .donut-container { display: flex; align-items: center; gap: 48px; margin-top: 20px; }
+  .donut-svg { width: 200px; height: 200px; transform: rotate(-90deg); }
+  .donut-ring { fill: none; stroke-width: 28; }
+  .donut-segment { fill: none; stroke-width: 28; stroke-linecap: butt; transition: stroke-dasharray 1.5s ease; }
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+
+  .email-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 20px;
+  }
+  .email-box { border-radius: 16px; padding: 28px; }
+  .email-box.bad { background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.2); }
+  .email-box.good { background: rgba(45,106,79,0.08); border: 1px solid rgba(45,106,79,0.2); }
+  /* Light email boxes */
+  .email-box.bad-light { background: #fef2f2; border: 1px solid #fecaca; color: var(--dark); }
+  .email-box.good-light { background: #f0fdf4; border: 1px solid #bbf7d0; color: var(--dark); }
+  .email-example {
+    font-family: monospace;
+    font-size: 0.95rem;
+    padding: 8px 14px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 6px 0;
+  }
+  .email-example.bad-email { background: rgba(231,76,60,0.15); color: var(--danger); }
+  .email-example.good-email { background: rgba(45,106,79,0.15); color: var(--primary); }
+
+  .bullet-list { list-style: none; margin-top: 10px; }
+  .bullet-list li {
+    padding: 6px 0;
+    padding-left: 24px;
+    position: relative;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+  .bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-light);
+  }
+  .bullet-list.danger li::before { background: var(--danger); }
+  .bullet-list.gold li::before { background: var(--gold); }
+
+  .flow-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .flow-node {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 600;
+    min-width: 120px;
+  }
+  .flow-node.active-node { background: rgba(45,106,79,0.2); border-color: var(--primary-light); color: var(--primary-light); }
+  .flow-node.gold-node { background: rgba(212,160,23,0.15); border-color: var(--gold); color: var(--gold); }
+  .flow-arrow { font-size: 1.4rem; opacity: 0.4; }
+
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 52px;
+    background: rgba(10,14,26,0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 100;
+  }
+  .nav-bar .slide-counter { font-size: 0.85rem; opacity: 0.5; font-weight: 500; }
+  .nav-bar .progress-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--gold));
+    transition: width 0.4s ease;
+  }
+  .nav-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--light);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: rgba(45,106,79,0.3); border-color: var(--primary-light); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-controls { display: flex; gap: 8px; }
+
+  /* Logos */
+  .logo-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .logo-sm {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .logo-sm-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: contain;
+  }
+  .logo-sm-mark {
+    width: 28px; height: 28px;
+    background: var(--primary);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.65rem;
+    color: white;
+  }
+  .logo-sm-mark.dark-mark {
+    background: var(--dark);
+  }
+  .logo-area {
+    height: 18px;
+    opacity: 0.9;
+  }
+  .logo-area-white {
+    height: 18px;
+    filter: invert(1);
+    opacity: 0.9;
+  }
+  .logo-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.2);
+  }
+  .logo-divider-dark {
+    width: 1px;
+    height: 20px;
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* Fixed logo top-left */
+  .sm-logo-fixed {
+    position: fixed;
+    top: 20px; left: 28px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.6;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in { animation: fadeInUp 0.6s ease forwards; }
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.2s; opacity: 0; }
+  .delay-3 { animation-delay: 0.3s; opacity: 0; }
+  .delay-4 { animation-delay: 0.4s; opacity: 0; }
+  .delay-5 { animation-delay: 0.5s; opacity: 0; }
+  .delay-6 { animation-delay: 0.6s; opacity: 0; }
+  .delay-7 { animation-delay: 0.7s; opacity: 0; }
+  .delay-8 { animation-delay: 0.8s; opacity: 0; }
+
+  .text-center { text-align: center; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .mt-32 { margin-top: 32px; }
+  .gap-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center; }
+
+  .glow-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; pointer-events: none; }
+  .orb-emerald { background: var(--primary); width: 400px; height: 400px; }
+  .orb-gold { background: var(--gold); width: 300px; height: 300px; }
+
+  .pyramid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    width: 100%;
+    max-width: 800px;
+  }
+  .pyramid-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.5;
+    margin-bottom: 10px;
+  }
+
+  /* Full-width image banner */
+  .image-banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Image with rounded corners inside card */
+  .slide-img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+
+  @media (max-width: 768px) {
+    .slide { padding: 40px 24px; }
+    .slide.no-pad { padding: 0; }
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.7rem; }
+    .split { grid-template-columns: 1fr; }
+    .split-image { min-height: 40vh; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .email-split { grid-template-columns: 1fr; }
+    .content-grid { grid-template-columns: 1fr; }
+    .bar-label { flex: 0 0 140px; font-size: 0.8rem; }
+    .donut-container { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sm-logo-fixed">
+  <img src="sm-workshop-assets/sm-logo.png" class="logo-sm-icon" alt="SM" style="width:26px;height:26px;">
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ==================== SLIDE 1: PORTADA (50:50 con foto Javier) ==================== -->
+  <div class="slide no-pad active" data-slide="0" style="background:#f5f0ea;">
+    <div class="split">
+      <div class="split-text" style="padding:60px 56px;">
+        <div class="logo-bar animate-in delay-1" style="margin-bottom:32px;">
+          <div class="logo-sm">
+            <img src="sm-workshop-assets/sm-logo.png" class="logo-sm-icon" alt="SM">
+            <span style="color:var(--dark);">Startup Miracle</span>
+          </div>
+          <div class="logo-divider-dark"></div>
+          <img src="sm-workshop-assets/area-logo.png" class="logo-area" alt="Area Centre">
+        </div>
+        <p class="section-label animate-in delay-2" style="color:var(--primary);">Area Centre x Startup Miracle Workshop</p>
+        <h1 class="animate-in delay-3" style="font-size:2.9rem;color:var(--dark);line-height:1.15;">Tu Negocio con AI:<br><span class="text-emerald-dark">De Caos Manual a Fluidez Operativa</span> usando Claude</h1>
+        <div class="animate-in delay-4" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;">
+          <span class="badge badge-green">100% Pr&aacute;ctico</span>
+          <span class="badge badge-gold">Potenciado por Claude</span>
+          <span class="badge badge-blue">Para PyMEs</span>
+        </div>
+        <p class="animate-in delay-5" style="opacity:0.5;font-size:0.8rem;color:var(--dark);margin-top:20px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Claude SMB Workshop &mdash; AI Fluency for Small and Medium Business Leaders</p>
+        <p class="mt-16 animate-in delay-6" style="opacity:0.4;font-size:0.85rem;color:var(--dark);">Dirigido por Javier Aguilera &mdash; Fundador, Startup Miracle</p>
+      </div>
+      <div class="split-image" style="background-image:url('sm-workshop-assets/cover-javier.png');background-position:center bottom;background-size:cover;background-color:#f5f0ea;"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 2: DEMANDA DE IA (dark) ==================== -->
+  <div class="slide bg-dark" data-slide="1">
+    <div class="glow-orb orb-emerald" style="top:50%;left:-150px;"></div>
+    <div class="text-center">
+      <p class="section-label">La Oportunidad</p>
+      <h2>La Demanda de IA en PyMEs Esta <span class="text-gold">Explotando</span></h2>
+      <p class="subtitle" style="margin:0 auto;">Y la mayoría de los negocios pequeños siguen mirando desde afuera.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-number" data-count="91">0%</span>
+        <span class="stat-label">de PyMEs dicen que la IA es crítica para competir en los próximos 2 años</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-count="75">0%</span>
+        <span class="stat-label">de pequeñas empresas planean aumentar su inversión en IA en 2026</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number danger-num" data-count="78">0%</span>
+        <span class="stat-label">no saben por dónde empezar ni en quién confiar para implementarlo</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" data-count="40" data-prefix="$" data-suffix="B">0</span>
+        <span class="stat-label">mercado de IA para PyMEs en 2027 (vs $8B en 2023)</span>
+      </div>
+    </div>
+    <p class="mt-24" style="opacity:0.5;font-size:0.8rem;">Fuentes: Salesforce SMB Trends 2025, McKinsey AI Adoption Index, MarketsandMarkets</p>
+  </div>
+
+  <!-- ==================== SLIDE 3: AI LITERACY (light/warm) ==================== -->
+  <div class="slide bg-warm" data-slide="2">
+    <div class="text-center">
+      <p class="section-label" style="color:var(--primary);">Este Salón, Ahora Mismo</p>
+      <h2 style="color:var(--dark);">&iquest;Dónde Estás <span class="text-emerald-dark">Tu</span> en el Camino de la IA?</h2>
+      <p class="subtitle" style="margin:0 auto;color:#555;">Les preguntamos. Esto nos respondieron 24 de ustedes.</p>
+    </div>
+    <div class="bar-chart">
+      <div class="bar-row">
+        <span class="bar-label" style="color:var(--dark);">Interesado, aún no empecé</span>
+        <div class="bar-track light-track">
+          <div class="bar-fill emerald" data-width="26" style="width:0;">26%</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="color:var(--dark);">Experimentando, nada pegó</span>
+        <div class="bar-track light-track">
+          <div class="bar-fill gold" data-width="30" style="width:0;">30%</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="color:var(--dark);">Usándolo en algunas áreas</span>
+        <div class="bar-track light-track">
+          <div class="bar-fill blue" data-width="26" style="width:0;">26%</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="color:var(--dark);">Uso activo en varios equipos</span>
+        <div class="bar-track light-track">
+          <div class="bar-fill purple" data-width="19" style="width:0;">19%</div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-32 text-center" style="max-width:600px;">
+      <p style="font-size:1.15rem;font-weight:600;color:var(--dark);"><span style="color:var(--gold);">El 56% de este salón</span> todavía está en el punto de partida.</p>
+      <p class="mt-8" style="opacity:0.6;font-size:0.95rem;color:var(--dark);">Eso no es una debilidad &mdash; por eso exactamente estamos aquí. Hoy cerramos esa brecha.</p>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 4: EMAIL (dark) ==================== -->
+  <div class="slide bg-dark" data-slide="3">
+    <div class="glow-orb orb-gold" style="top:-100px;right:100px;"></div>
+    <div class="text-center">
+      <p class="section-label">Una Llamada de Atención</p>
+      <h2>El 63% Se Registró con un <span class="text-danger">Email Personal</span></h2>
+      <p class="subtitle" style="margin:0 auto;">Y eso les está costando dinero. Así:</p>
+    </div>
+    <div class="email-split">
+      <div class="email-box bad">
+        <h3 style="color:var(--danger);margin-bottom:14px;">Email Personal</h3>
+        <div class="email-example bad-email">carlos.contratistageneral@gmail.com</div>
+        <ul class="bullet-list danger">
+          <li><strong>Imán de spam</strong> &mdash; las políticas de Gmail y Yahoo ahora filtran agresivamente a remitentes sin dominio propio</li>
+          <li><strong>Cero credibilidad</strong> &mdash; tus clientes ven gmail.com y dudan si eres un negocio serio</li>
+          <li><strong>No escala</strong> &mdash; sin buzones de equipo, sin automatización de marketing, sin emails transaccionales</li>
+          <li><strong>Bloqueado en plataformas</strong> &mdash; portales como Angi, Thumbtack y directorios de negocios exigen email corporativo</li>
+          <li><strong>Sin recordación de marca</strong> &mdash; cada email que envías es una oportunidad perdida de branding</li>
+        </ul>
+      </div>
+      <div class="email-box good">
+        <h3 style="color:var(--primary-light);margin-bottom:14px;">Email Corporativo</h3>
+        <div class="email-example good-email">carlos@construyeya.com</div>
+        <ul class="bullet-list">
+          <li><strong>Llega al inbox</strong> &mdash; con SPF/DKIM/DMARC, tus emails realmente llegan</li>
+          <li><strong>Confianza instantánea</strong> &mdash; los clientes saben que tratan con un negocio real</li>
+          <li><strong>Listo para equipo</strong> &mdash; ventas@, info@, soporte@ &mdash; escala sin compartir contraseñas</li>
+          <li><strong>Listo para marketing</strong> &mdash; campañas, facturas y confirmaciones que no caen en spam</li>
+          <li><strong>Listo para IA</strong> &mdash; tus agentes envían emails profesionales a nombre de tu marca</li>
+        </ul>
+      </div>
+    </div>
+    <p class="mt-24 text-center" style="opacity:0.6;font-size:0.85rem;">Dominio + email: ~$12/año por el dominio, $6/mes por usuario en Google Workspace. No hay excusa.</p>
+  </div>
+
+  <!-- ==================== SLIDE 5: WEBSITE (50:50 con WhatsApp AI) ==================== -->
+  <div class="slide no-pad bg-light" data-slide="4">
+    <div class="split">
+      <div class="split-text" style="padding:50px 48px;">
+        <p class="section-label" style="color:var(--primary);">Tu Base Digital</p>
+        <h2 style="color:var(--dark);font-size:2rem;">El 56% No Tiene <span style="color:var(--gold);">Website</span></h2>
+        <p style="color:#555;font-size:0.95rem;line-height:1.6;margin-bottom:20px;">En la era de la IA, tu website no es un folleto &mdash; es el cerebro de tu negocio.</p>
+        <ul class="bullet-list" style="margin-top:0;">
+          <li style="color:var(--dark);"><strong>Base de conocimiento viva</strong> &mdash; los agentes de IA leen tu sitio para entender tus servicios, precios y políticas</li>
+          <li style="color:var(--dark);"><strong>Operaciones que se acumulan</strong> &mdash; cada página que agregas hace más inteligentes a tus agentes</li>
+          <li style="color:var(--dark);"><strong>AEO: Optimización para IA</strong> &mdash; si no tienes website, no existes en búsquedas de ChatGPT ni Google AI</li>
+          <li style="color:var(--dark);"><strong>Hub de ventas 24/7</strong> &mdash; landing pages, formularios, agenda, testimonios, portafolios</li>
+          <li style="color:var(--dark);"><strong>Señal de madurez</strong> &mdash; bancos, socios y clientes revisan tu sitio. Sin sitio = sin credibilidad a escala</li>
+          <li style="color:var(--dark);"><strong>Entrenamiento de agentes</strong> &mdash; agentes de teléfono, chat y email necesitan contexto. Tu website ES ese contexto</li>
+        </ul>
+        <p style="color:#555;font-size:0.92rem;line-height:1.6;margin-top:20px;font-style:italic;">...y el 100% no tiene un Concierge o Virtual Agent en WhatsApp o SMS que responda afterhours y cuando est&aacute;s ocupad@.</p>
+      </div>
+      <div class="split-image" style="background-image:url('sm-workshop-assets/whatsapp-ai.jpg');background-position:center top;"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 6: CLAUDE vs CHATGPT (dark, fact-checked) ==================== -->
+  <div class="slide bg-dark" data-slide="5" style="padding:40px 60px;">
+    <div class="glow-orb orb-emerald" style="bottom:0;left:50%;transform:translateX(-50%);"></div>
+    <div class="text-center">
+      <p class="section-label">La Herramienta Correcta</p>
+      <h2><span class="text-primary">Claude</span> vs ChatGPT: &iquest;Cuál <span class="text-gold">Para Que</span>?</h2>
+      <p class="subtitle" style="margin:0 auto;font-size:1rem;">Ambos son poderosos. Ser honestos te ayuda a elegir mejor.</p>
+    </div>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th class="feature" style="width:20%;">Capacidad</th>
+          <th class="claude-col" style="width:35%;">Claude (Anthropic)</th>
+          <th class="chatgpt-col" style="width:35%;">ChatGPT / OpenAI</th>
+          <th style="width:10%;text-align:center;">Mejor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="feature">Modelo top-tier</td>
+          <td class="claude-col"><span class="badge badge-green">Opus 4.7</span> El más preciso del mercado. Mínimas alucinaciones</td>
+          <td class="chatgpt-col"><span class="badge badge-orange">GPT-5.5</span> Muy potente, excelente en razonamiento general</td>
+          <td style="text-align:center;"><span class="winner-tag winner-tie">=</span></td>
+        </tr>
+        <tr>
+          <td class="feature">Honestidad y Precisión</td>
+          <td class="claude-col"><strong>Líder absoluto.</strong> Cuando las alucinaciones son inaceptables, usas Claude</td>
+          <td class="chatgpt-col">Mejoró mucho, pero aún más propenso a inventar datos con tono confiado</td>
+          <td style="text-align:center;"><span class="winner-tag winner-claude">Claude</span></td>
+        </tr>
+        <tr>
+          <td class="feature">Análisis de datos contextual</td>
+          <td class="claude-col"><strong>Superior.</strong> Hasta 1M tokens de contexto. Analiza documentos completos sin perder el hilo</td>
+          <td class="chatgpt-col">1M tokens en GPT-4.1. GPT-5.5 fuerte pero menos consistente en docs largos</td>
+          <td style="text-align:center;"><span class="winner-tag winner-claude">Claude</span></td>
+        </tr>
+        <tr>
+          <td class="feature">Frontend y Diseño</td>
+          <td class="claude-col"><span class="badge badge-green">Claude Code</span> Genera mockups, UI completas, HTML/CSS producción. Despliega directo</td>
+          <td class="chatgpt-col">Funcional pero menos pulido en diseño visual y front-end</td>
+          <td style="text-align:center;"><span class="winner-tag winner-claude">Claude</span></td>
+        </tr>
+        <tr>
+          <td class="feature">Backend pesado</td>
+          <td class="claude-col">Capaz, pero Code corre local &mdash; ideal para proyectos medianos</td>
+          <td class="chatgpt-col"><span class="badge badge-orange">Codex</span> Bestia para backend. Corre en la nube, escala, trabaja con repos grandes</td>
+          <td style="text-align:center;"><span class="winner-tag winner-openai">OpenAI</span></td>
+        </tr>
+        <tr>
+          <td class="feature">Generación de Imágenes</td>
+          <td class="claude-col"><span class="badge badge-red">No tiene</span> Claude no genera imágenes nativamente</td>
+          <td class="chatgpt-col"><span class="badge badge-orange">GPT Image 2.0</span> Increíble para marketing, redes sociales, contenido visual</td>
+          <td style="text-align:center;"><span class="winner-tag winner-openai">OpenAI</span></td>
+        </tr>
+        <tr>
+          <td class="feature">Integraciones de Negocio</td>
+          <td class="claude-col"><span class="badge badge-green">MCP + Skills</span> Slack, Gmail, Drive, Supabase, Stripe, Figma, CRM...</td>
+          <td class="chatgpt-col">Actions (ecosistema más limitado y en transición)</td>
+          <td style="text-align:center;"><span class="winner-tag winner-claude">Claude</span></td>
+        </tr>
+        <tr>
+          <td class="feature">Precio PyMEs</td>
+          <td class="claude-col">$20/mes Pro, $100/mes Max</td>
+          <td class="chatgpt-col">$20/mes Plus, $200/mes Pro</td>
+          <td style="text-align:center;"><span class="winner-tag winner-claude">Claude</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="mt-16 text-center" style="max-width:800px;">
+      <p style="opacity:0.7;font-size:0.82rem;">
+        <strong>Veredicto:</strong> Usa <strong>Claude Opus 4.7</strong> cuando la precisión importa, para análisis profundo de datos, y diseño front-end.
+        Usa <strong>GPT-5.5 + Codex</strong> para backend pesado e imágenes de marketing.
+        <strong>El equipo ganador usa ambos.</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 7: SKILLS + MCP (warm/light) ==================== -->
+  <div class="slide bg-warm" data-slide="6">
+    <div class="text-center">
+      <p class="section-label" style="color:var(--primary);">El Ecosistema Claude</p>
+      <h2 style="color:var(--dark);">Skills, MCP y Projects: <span style="color:var(--gold);">Tu Kit de IA</span></h2>
+      <p class="subtitle" style="margin:0 auto;color:#555;">Claude no es solo un chatbot. Es un sistema operativo para tu negocio.</p>
+    </div>
+    <div class="content-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f527;</span>
+        <div class="card-title" style="color:var(--dark);">Claude Skills</div>
+        <div class="card-body" style="color:#555;">
+          Comandos reutilizables que codifican tus workflows exactos. Los creas una vez, los usas para siempre.<br><br>
+          <span class="badge badge-green">Personalizados a tu negocio</span>
+        </div>
+      </div>
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f50c;</span>
+        <div class="card-title" style="color:var(--dark);">MCP Servers</div>
+        <div class="card-body" style="color:#555;">
+          Conecta a Claude con tus herramientas reales &mdash; Gmail, Slack, Google Drive, Supabase, Stripe, tu CRM.<br><br>
+          <span class="badge badge-blue">Integraciones en vivo</span>
+        </div>
+      </div>
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f4e6;</span>
+        <div class="card-title" style="color:var(--dark);">Claude Projects</div>
+        <div class="card-body" style="color:#555;">
+          Espacios de trabajo con archivos persistentes, instrucciones y acceso de equipo. Un proyecto por departamento o cliente.<br><br>
+          <span class="badge badge-gold">Conocimiento que permanece</span>
+        </div>
+      </div>
+    </div>
+    <div class="mt-32 text-center" style="max-width:700px;">
+      <p style="color:#444;font-size:0.95rem;line-height:1.7;">
+        Las empresas grandes tienen departamentos de IT.<br>
+        Con Claude Skills + MCP, <strong>una empresa de 5 personas tiene el mismo poder</strong> &mdash; sin contratar un desarrollador.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 8: PROJECTS PRACTICO (dark) ==================== -->
+  <div class="slide bg-dark" data-slide="7">
+    <div class="glow-orb orb-emerald" style="top:100px;right:-100px;"></div>
+    <div class="text-center">
+      <p class="section-label">Caso Práctico</p>
+      <h2>Claude Projects: <span class="text-primary">El Cerebro de Tu Negocio</span></h2>
+    </div>
+    <div class="content-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="content-card">
+        <h3 style="color:var(--primary-light);">Lo Qué Subes</h3>
+        <ul class="bullet-list">
+          <li>Tu catálogo de servicios y precios</li>
+          <li>SOPs y manuales de operación</li>
+          <li>Propuestas y contratos anteriores</li>
+          <li>FAQ de clientes y objeciones comunes</li>
+          <li>Mapa de territorios y areas de servicio</li>
+          <li>Guia de marca y tono de voz</li>
+          <li>Información de la competencia</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h3 style="color:var(--gold);">Lo Que Sale</h3>
+        <ul class="bullet-list gold">
+          <li>"Redacta una propuesta para la remodelación de un restaurante en Doral" &mdash; <em>listo en 30 seg</em></li>
+          <li>"Escribe un follow-up al Sr. Méndez sobre su presupuesto de obra" &mdash; <em>en tu voz</em></li>
+          <li>"&iquest;Cuál es nuestra política de garantía para proyectos de más de $5K?" &mdash; <em>respuesta instantánea</em></li>
+          <li>"Crea el contenido de Instagram de esta semana" &mdash; <em>con tu marca</em></li>
+          <li>"Resume los proyectos completados del mes pasado" &mdash; <em>desde tus datos</em></li>
+          <li>"Entrena a mi nuevo empleado en nuestro proceso de coaching" &mdash; <em>onboarding interactivo</em></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 9: CLAUDE CODE (50:50 con Speed to Lead img) ==================== -->
+  <div class="slide no-pad bg-primary" data-slide="8">
+    <div class="split">
+      <div class="split-text" style="padding:50px 48px;color:white;">
+        <p class="section-label" style="opacity:0.7;">La Herramienta Pesada</p>
+        <h1 style="font-size:2.8rem;">Claude Code</h1>
+        <p style="opacity:0.9;font-size:1rem;line-height:1.6;margin-bottom:24px;">Cuando chatear no es suficiente &mdash; Claude Code construye, despliega y opera software real.</p>
+        <ul class="bullet-list" style="margin-top:0;">
+          <li><strong>Acceso total a tu terminal</strong> &mdash; lee tu código, ejecuta comandos, edita archivos</li>
+          <li><strong>Despliegues reales</strong> &mdash; websites, APIs, dashboards, automatizaciónes en vivo</li>
+          <li><strong>Skills y Hooks</strong> &mdash; comandos personalizados que codifican tu workflow exacto</li>
+          <li><strong>Integraciones MCP</strong> &mdash; GitHub, Supabase, Vercel, Stripe, Slack, Figma y mas</li>
+        </ul>
+        <p class="mt-24" style="opacity:0.85;font-size:0.9rem;">OpenAI Codex es muy capaz en la nube. <strong>Claude Code opera directo en tu máquina y despliega a producción.</strong></p>
+      </div>
+      <div class="split-image" style="background-image:url('sm-workshop-assets/claude-code-terminal.webp');background-color:#2d2d2d;"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 10: CLAUDE CODE + HERMES (50:50 con AI-OS hero) ==================== -->
+  <div class="slide no-pad bg-dark" data-slide="9">
+    <div class="split">
+      <div class="split-image" style="background-image:url('sm-workshop-assets/ai-os-hermes.jpg');"></div>
+      <div class="split-text" style="padding:50px 48px;">
+        <p class="section-label">La Mezcla Explosiva</p>
+        <h2>Claude Code + <span class="text-gold">Hermes Agent</span></h2>
+        <p style="opacity:0.8;font-size:0.95rem;line-height:1.6;margin-bottom:20px;">Claude Code lo construye. Hermes lo opera 24/7. Tu negocio nunca duerme.</p>
+        <h3 style="color:var(--primary-light);font-size:1.1rem;">Lo Que Hace Claude Code</h3>
+        <ul class="bullet-list" style="margin-top:4px;margin-bottom:20px;">
+          <li>Construye landing pages, CRM, dashboards</li>
+          <li>Conecta APIs (Stripe, Supabase, email, SMS)</li>
+          <li>Prueba, revisa y despliega a producción</li>
+        </ul>
+        <h3 style="color:var(--gold);font-size:1.1rem;">Lo Que Hace Hermes Después</h3>
+        <ul class="bullet-list gold" style="margin-top:4px;">
+          <li>Corre 24/7 en un servidor sin tu laptop</li>
+          <li>Monitorea inbox, CRM, redes, Telegram</li>
+          <li>Ejecuta tareas programadas (reportes, outreach)</li>
+          <li>Te avisa por Telegram cuando necesita tu decisión</li>
+        </ul>
+        <p class="mt-24" style="font-size:0.95rem;font-weight:600;"><span class="text-primary">Claude Code</span> es el arquitecto. <span class="text-gold">Hermes</span> es el empleado que nunca falta.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 11: EL STACK (gradient) ==================== -->
+  <div class="slide bg-gradient" data-slide="10">
+    <div class="text-center">
+      <p class="section-label">La Foto Completa</p>
+      <h2>Tu <span class="text-primary">Stack</span> de Negocio con IA</h2>
+      <p class="subtitle" style="margin:0 auto;">De los cimientos al piloto automático &mdash; cada capa potencia la anterior.</p>
+    </div>
+    <div class="pyramid">
+      <div class="pyramid-row animate-in delay-8" style="width:100%;background:rgba(212,160,23,0.15);border:1px solid rgba(212,160,23,0.3);color:var(--gold);">
+        &#x1f451; Hermes Agent &mdash; Operaciónes Autónomas 24/7
+      </div>
+      <div class="pyramid-row animate-in delay-7" style="width:92%;background:rgba(45,106,79,0.2);border:1px solid rgba(45,106,79,0.3);color:var(--primary-light);">
+        &#x1f4bb; Claude Code &mdash; Construir Apps, Desplegar, Automatizar
+      </div>
+      <div class="pyramid-row animate-in delay-6" style="width:84%;background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);color:var(--blue);">
+        &#x1f527; Skills + MCP &mdash; Workflows, Integraciones, SOPs
+      </div>
+      <div class="pyramid-row animate-in delay-5" style="width:76%;background:rgba(142,68,173,0.15);border:1px solid rgba(142,68,173,0.3);color:var(--purple);">
+        &#x1f4c1; Claude Projects &mdash; El Cerebro del Negocio
+      </div>
+      <div class="pyramid-row animate-in delay-4" style="width:68%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);">
+        &#x1f310; Website &mdash; Fuente Única de Verdad, AEO, Legible por Agentes
+      </div>
+      <div class="pyramid-row animate-in delay-3" style="width:60%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);opacity:0.8;">
+        &#x2709; Email Corporativo + Dominio &mdash; Identidad y Confianza
+      </div>
+    </div>
+    <p class="mt-24 text-center" style="opacity:0.7;font-size:0.88rem;">Cada capa hace más poderosa a la siguiente. Te saltas una y todo el stack se tambalea.</p>
+  </div>
+
+  <!-- ==================== SLIDE 12: TAREAS REALES (light) ==================== -->
+  <div class="slide bg-warm" data-slide="11">
+    <div class="text-center">
+      <p class="section-label" style="color:var(--primary);">Lo Qué Nos Dijeron</p>
+      <h2 style="color:var(--dark);">Su Tarea #1 de Negocio Para IA</h2>
+      <p class="subtitle" style="margin:0 auto;color:#555;">Respuestas reales de sus registros. Soluciones reales que cubriremos hoy.</p>
+    </div>
+    <div class="content-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f4e7;</span>
+        <div class="card-title" style="color:var(--dark);">Ventas y Seguimiento</div>
+        <div class="card-body" style="color:#555;">"Automatizar outreach y follow-ups"<br>"Convertir más leads en clientes"<br>"Automatización de campañas"</div>
+        <div class="mt-8"><span class="badge badge-green">Mas solicitado</span></div>
+      </div>
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f4cb;</span>
+        <div class="card-title" style="color:var(--dark);">Operaciónes y SOPs</div>
+        <div class="card-body" style="color:#555;">"Coordinación de trabajos"<br>"Manuales de operación"<br>"Estandarizar procesos"</div>
+        <div class="mt-8"><span class="badge badge-blue">Alto impacto</span></div>
+      </div>
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f4b0;</span>
+        <div class="card-title" style="color:var(--dark);">Finanzas y Reportes</div>
+        <div class="card-body" style="color:#555;">"Automatizar facturas y nómina"<br>"Reportes semanales de ventas"<br>"Organización financiera"</div>
+        <div class="mt-8"><span class="badge badge-gold">Victorias rapidas</span></div>
+      </div>
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f4f1;</span>
+        <div class="card-title" style="color:var(--dark);">Redes y Contenido</div>
+        <div class="card-body" style="color:#555;">"Crear portafolios"<br>"Estrategia y contenido"<br>"Propuestas y presentaciónes"</div>
+      </div>
+      <div class="content-card light-card">
+        <span class="card-icon">&#x1f4de;</span>
+        <div class="card-title" style="color:var(--dark);">Engagement con Clientes</div>
+        <div class="card-body" style="color:#555;">"Follow-ups automáticos"<br>"Servicio al cliente"<br>"Gestión de reseñas"</div>
+      </div>
+      <div class="content-card light-card">
+        <span class="card-icon">&#x2708;&#xfe0f;</span>
+        <div class="card-title" style="color:var(--dark);">Especificos de Industria</div>
+        <div class="card-body" style="color:#555;">"Despacho de vuelos"<br>"Estimación de revestimientos"<br>"Tracking de construcción"</div>
+      </div>
+    </div>
+    <p class="mt-16 text-center" style="font-size:1rem;font-weight:600;color:var(--dark);"><span style="color:var(--primary);">Cada una de estas</span> se resuelve con Claude + la configuración correcta.</p>
+  </div>
+
+  <!-- ==================== SLIDE 13: DEMOGRAFICOS (dark) ==================== -->
+  <div class="slide bg-dark" data-slide="12">
+    <div class="text-center">
+      <p class="section-label">Conoce Tu Salón</p>
+      <h2>&iquest;Quiénes Están Hoy Aqui?</h2>
+    </div>
+    <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="stat-card">
+        <span class="stat-number" data-count="24">0</span>
+        <span class="stat-label">Dueños y operadores de negocios</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" style="font-size:2.2rem;-webkit-text-fill-color:var(--gold);color:var(--gold);">85%</span>
+        <span class="stat-label">Micro-empresas (1-10 empleados)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" style="font-size:2.2rem;-webkit-text-fill-color:var(--primary-light);color:var(--primary-light);">74%</span>
+        <span class="stat-label">Nos encontraron por Area Centre</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number danger-num" style="font-size:2.2rem;-webkit-text-fill-color:var(--danger);color:var(--danger);">56%</span>
+        <span class="stat-label">No tienen website de negocio</span>
+      </div>
+    </div>
+    <div class="donut-container mt-32">
+      <div style="text-align:center;">
+        <h3 style="margin-bottom:10px;">Industrias</h3>
+        <svg class="donut-svg" viewBox="0 0 160 160">
+          <circle class="donut-ring" cx="80" cy="80" r="66" stroke="rgba(255,255,255,0.06)"/>
+          <circle class="donut-segment" cx="80" cy="80" r="66" stroke="var(--primary-light)" stroke-dasharray="0 414.69" data-target="107.82 306.87"/>
+          <circle class="donut-segment" cx="80" cy="80" r="66" stroke="var(--gold)" stroke-dasharray="0 414.69" data-target="78.79 335.9" stroke-dashoffset="-107.82"/>
+          <circle class="donut-segment" cx="80" cy="80" r="66" stroke="var(--blue)" stroke-dasharray="0 414.69" data-target="62.2 352.49" stroke-dashoffset="-186.61"/>
+          <circle class="donut-segment" cx="80" cy="80" r="66" stroke="var(--purple)" stroke-dasharray="0 414.69" data-target="29.03 385.66" stroke-dashoffset="-248.81"/>
+          <circle class="donut-segment" cx="80" cy="80" r="66" stroke="rgba(255,255,255,0.15)" stroke-dasharray="0 414.69" data-target="136.85 277.84" stroke-dashoffset="-277.84"/>
+        </svg>
+      </div>
+      <div class="donut-legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--primary-light);"></span> Bienes Raices (26%)</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--gold);"></span> Marketing / Creativo (19%)</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--blue);"></span> Construcción (15%)</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--purple);"></span> Seguros (7%)</div>
+        <div class="legend-item"><span class="legend-dot" style="background:rgba(255,255,255,0.3);"></span> Aviacion, Foto, Comida, Software, Otros (33%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 14: VISION 90 DIAS (warm/light) ==================== -->
+  <div class="slide bg-warm" data-slide="13">
+    <div class="text-center">
+      <p class="section-label" style="color:var(--primary);">La Vision</p>
+      <h2 style="color:var(--dark);">Como Se Ve Tu Negocio en <span style="color:var(--gold);">90 Dias</span></h2>
+    </div>
+    <div class="content-grid" style="grid-template-columns: 1fr 1fr;max-width:900px;">
+      <div class="content-card" style="background:#fef2f2;border-color:#fecaca;color:var(--dark);">
+        <h3 style="color:var(--danger);">Hoy (Sin IA)</h3>
+        <ul class="bullet-list danger">
+          <li style="color:var(--dark);">Respondiendo las mismas preguntas 20 veces al dia</li>
+          <li style="color:var(--dark);">Escribiendo propuestas desde cero cada vez</li>
+          <li style="color:var(--dark);">Olvidando darle seguimiento a los leads</li>
+          <li style="color:var(--dark);">Sin sistema para entrenar empleados nuevos</li>
+          <li style="color:var(--dark);">Redes sociales? "Cuando tenga tiempo"</li>
+          <li style="color:var(--dark);">La competencia aparece en búsquedas de IA. Tu no.</li>
+        </ul>
+      </div>
+      <div class="content-card" style="background:#f0fdf4;border-color:#bbf7d0;color:var(--dark);">
+        <h3 style="color:var(--primary);">90 Dias (Con Este Stack)</h3>
+        <ul class="bullet-list">
+          <li style="color:var(--dark);">La IA responde preguntas de clientes 24/7 desde tu website</li>
+          <li style="color:var(--dark);">Propuestas generadas en 30 segundos, con tu voz</li>
+          <li style="color:var(--dark);">Secuencias de seguimiento automáticas que nunca olvidan</li>
+          <li style="color:var(--dark);">Nuevos empleados se entrenan solos con tu base de conocimiento</li>
+          <li style="color:var(--dark);">3 publicaciones/semana en autopilot, con tu marca</li>
+          <li style="color:var(--dark);">Las búsquedas de IA te recomiendan a TI</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-32 text-center">
+      <p style="font-size:1.3rem;font-weight:700;color:var(--dark);">La pregunta no es <em class="serif">"&iquest;debo usar IA?"</em></p>
+      <p style="font-size:1.3rem;font-weight:700;color:var(--gold);" class="mt-8">Es <em class="serif">"&iquest;que tan rapido puedo empezar?"</em></p>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 15: CTA (primary + logos) ==================== -->
+  <div class="slide bg-primary" data-slide="14">
+    <div class="text-center">
+      <p class="section-label" style="opacity:0.7;">Vamos a Construir</p>
+      <h1 style="font-size:3.2rem;">Tu Siguiente Paso</h1>
+      <div class="mt-32" style="max-width:650px;margin-left:auto;margin-right:auto;">
+        <div style="display:flex;flex-direction:column;gap:18px;text-align:left;">
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <span style="background:rgba(255,255,255,0.15);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">1</span>
+            <div>
+              <strong style="font-size:1.05rem;">Compra tu dominio + email corporativo</strong>
+              <p style="opacity:0.8;font-size:0.88rem;margin-top:4px;">$12/ano + $6/mes. Se acabó el gmail.com en tus facturas.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <span style="background:rgba(255,255,255,0.15);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">2</span>
+            <div>
+              <strong style="font-size:1.05rem;">Lanza tu website como base de conocimiento de IA</strong>
+              <p style="opacity:0.8;font-size:0.88rem;margin-top:4px;">Servicios, precios, FAQs, casos de estudio. Los cimientos de todo.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <span style="background:rgba(255,255,255,0.15);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">3</span>
+            <div>
+              <strong style="font-size:1.05rem;">Activa Claude Pro + tu primer Proyecto</strong>
+              <p style="opacity:0.8;font-size:0.88rem;margin-top:4px;">Sube tus SOPs, precios y tono de marca. Empieza a producir trabajo real.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <span style="background:rgba(212,160,23,0.4);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">4</span>
+            <div>
+              <strong style="font-size:1.05rem;">Escala con Claude Code + Hermes</strong>
+              <p style="opacity:0.8;font-size:0.88rem;margin-top:4px;">Automatizaciónes que corren 24/7. Tu negocio opera mientras duermes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-32">
+        <p class="serif" style="font-size:1.5rem;opacity:0.9;">Convierte el caos manual en ingresos impulsados por IA.</p>
+        <div class="logo-bar mt-24" style="justify-content:center;">
+          <div class="logo-sm">
+            <img src="sm-workshop-assets/sm-logo.png" class="logo-sm-icon" alt="SM" style="width:32px;height:32px;">
+            <span>Startup Miracle</span>
+          </div>
+          <div class="logo-divider"></div>
+          <img src="sm-workshop-assets/area-logo.png" class="logo-area-white" alt="Area Centre">
+        </div>
+        <p class="mt-16" style="opacity:0.6;font-size:0.88rem;">startupmiracle.com &nbsp;&bull;&nbsp; @javyautomation &nbsp;&bull;&nbsp; Javier Aguilera</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navegacion -->
+<div class="nav-bar">
+  <div class="progress-bar" id="progressBar" style="width:0%;"></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>&larr; Atrás</button>
+  </div>
+  <span class="slide-counter" id="slideCounter">1 / 15</span>
+  <div class="nav-controls">
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Siguiente &rarr;</button>
+  </div>
+</div>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+
+  function goToSlide(n) {
+    if (n < 0 || n >= totalSlides) return;
+    const prev = slides[currentSlide];
+    const next = slides[n];
+    prev.classList.remove('active');
+    prev.classList.add(n > currentSlide ? 'exit-left' : '');
+    setTimeout(() => prev.classList.remove('exit-left'), 500);
+    next.classList.add('active');
+    currentSlide = n;
+    document.getElementById('slideCounter').textContent = `${n + 1} / ${totalSlides}`;
+    document.getElementById('prevBtn').disabled = n === 0;
+    document.getElementById('nextBtn').disabled = n === totalSlides - 1;
+    document.getElementById('progressBar').style.width = `${((n + 1) / totalSlides) * 100}%`;
+    animateSlide(next);
+  }
+
+  function nextSlide() { goToSlide(currentSlide + 1); }
+  function prevSlide() { goToSlide(currentSlide - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 60) { diff > 0 ? nextSlide() : prevSlide(); }
+  });
+
+  function animateSlide(slide) {
+    slide.querySelectorAll('.bar-fill').forEach((bar, i) => {
+      setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200 + i * 150);
+    });
+    slide.querySelectorAll('.donut-segment').forEach((seg, i) => {
+      if (seg.dataset.target) {
+        setTimeout(() => { seg.setAttribute('stroke-dasharray', seg.dataset.target); }, 300 + i * 200);
+      }
+    });
+    slide.querySelectorAll('.stat-number[data-count]').forEach((el) => {
+      const target = parseInt(el.dataset.count);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '%';
+      let current = 0;
+      const step = Math.ceil(target / 40);
+      const interval = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(interval); }
+        el.textContent = prefix + current + suffix;
+      }, 30);
+    });
+  }
+
+  animateSlide(slides[0]);
+</script>
+
+</body>
+</html>
