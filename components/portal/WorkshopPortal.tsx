@@ -60,12 +60,13 @@ const COLOR_MAP: Record<string, { bg: string; text: string; border: string }> = 
     indigo: { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
 };
 
-type Tab = "profile" | "intelligence" | "skills" | "tools" | "assessment";
+type Tab = "profile" | "intelligence" | "skills" | "setup" | "tools" | "assessment";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "profile", label: "Your Profile", icon: <User className="w-4 h-4" /> },
     { id: "intelligence", label: "Intelligence", icon: <Sparkles className="w-4 h-4" /> },
     { id: "skills", label: "Skills Library", icon: <Download className="w-4 h-4" /> },
+    { id: "setup", label: "Setup Guide", icon: <BookOpen className="w-4 h-4" /> },
     { id: "tools", label: "Recommended Tools", icon: <Wrench className="w-4 h-4" /> },
     { id: "assessment", label: "Self-Assessment", icon: <ClipboardList className="w-4 h-4" /> },
 ];
@@ -258,6 +259,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                             onCopy={copySkill}
                         />
                     )}
+                    {activeTab === "setup" && <SetupGuideTab />}
                     {activeTab === "tools" && <ToolsTab />}
                     {activeTab === "assessment" && (
                         <AssessmentTab
@@ -541,6 +543,184 @@ const RECOMMENDED_TOOLS: { name: string; description: string; url: string; cta: 
     { name: "Supabase", description: "Your database and CRM in one. Postgres, auth, realtime — the backbone for lead tracking, customer data, and AI agent memory.", url: "https://supabase.com", cta: "Get Supabase", color: "emerald", icon: "database" },
     { name: "Hermes Agent", description: "Your virtual assistant layer. Human-in-the-loop for tasks AI shouldn't handle alone — scheduling, follow-ups, escalations.", url: "https://startupmiracle.com", cta: "Learn More", color: "fuchsia", icon: "bot" },
 ];
+
+function SetupGuideTab() {
+    const SMB_PLUGIN_URL = "https://claude.ai/redirect/claudedotcom.v1.247c9b25-baef-4c4f-8740-ff802e986118/desktop/customize/plugins/new?marketplace=anthropics/knowledge-work-plugins&plugin=small-business";
+
+    return (
+        <div className="space-y-8">
+            <div>
+                <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>
+                    Setup Guide: Skills &amp; Plugins
+                </h2>
+                <p className="text-sm text-zinc-500 mt-1 max-w-xl">
+                    Learn how to supercharge Claude with Skills and Plugins. One click to install, instant value.
+                </p>
+            </div>
+
+            {/* 1. Install SMB Plugin — hero CTA */}
+            <Card className="border-emerald-200 bg-gradient-to-br from-emerald-50 to-white overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-12 -mt-12" />
+                <CardContent className="p-6">
+                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-3">
+                        Recommended first step
+                    </Badge>
+                    <h3 className="text-xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>
+                        Install the Small Business Plugin
+                    </h3>
+                    <p className="text-sm text-zinc-600 mt-2 leading-relaxed max-w-xl">
+                        Anthropic built a plugin specifically for SMBs. It includes <strong>31 pre-built skills</strong> (payroll planning,
+                        CRM cleanup, invoice chasing, content strategy, and more) plus <strong>12 connectors</strong> to your existing tools
+                        (QuickBooks, PayPal, HubSpot, Stripe, Gmail, Slack, and more).
+                    </p>
+                    <p className="text-sm text-zinc-600 mt-2">
+                        One click installs everything. You approve every step that touches money or customers.
+                    </p>
+                    <a
+                        href={SMB_PLUGIN_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
+                        style={{
+                            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                            boxShadow: "0 2px 8px rgba(16, 185, 129, 0.3)",
+                        }}
+                    >
+                        <Sparkles className="w-4 h-4" />
+                        Install in Claude Cowork
+                        <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                </CardContent>
+            </Card>
+
+            {/* Before / After */}
+            <div>
+                <h3 className="text-lg font-semibold text-zinc-900 mb-4" style={{ fontFamily: "var(--font-heading)" }}>
+                    Before &amp; After Installing
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-2 flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-zinc-200 text-zinc-600 flex items-center justify-center text-[10px] font-bold">1</span>
+                            Before — click Install
+                        </div>
+                        <Card className="overflow-hidden border-zinc-200">
+                            <img
+                                src="/images/claude-plugin-before.jpg"
+                                alt="Small Business plugin install screen — click Install"
+                                className="w-full"
+                            />
+                        </Card>
+                    </div>
+                    <div>
+                        <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-2 flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">2</span>
+                            After — 31 skills + 12 connectors ready
+                        </div>
+                        <Card className="overflow-hidden border-emerald-200">
+                            <img
+                                src="/images/claude-plugin-after.jpg"
+                                alt="Small Business plugin installed — 31 skills and 12 connectors"
+                                className="w-full"
+                            />
+                        </Card>
+                    </div>
+                </div>
+            </div>
+
+            {/* What are Skills */}
+            <Card>
+                <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-zinc-900 mb-4" style={{ fontFamily: "var(--font-heading)" }}>
+                        What are Claude Skills?
+                    </h3>
+                    <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+                        Skills are reusable instructions that teach Claude <em>how</em> to do a specific job.
+                        Instead of explaining your process every time, you write it once as a <code className="px-1 py-0.5 bg-zinc-100 rounded text-xs">.md</code> file
+                        and Claude follows it every time.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                        <div className="p-4 bg-zinc-50 rounded-xl">
+                            <div className="text-sm font-semibold text-zinc-900 mb-2">Claude Code (CLI / Desktop)</div>
+                            <ol className="text-sm text-zinc-600 space-y-1.5 list-decimal list-inside">
+                                <li>Download a <code className="px-1 py-0.5 bg-zinc-100 rounded text-[11px]">SKILL.md</code> from the Skills Library tab</li>
+                                <li>Save it to <code className="px-1 py-0.5 bg-zinc-100 rounded text-[11px]">~/.claude/skills/</code></li>
+                                <li>Claude auto-detects it next session</li>
+                            </ol>
+                        </div>
+                        <div className="p-4 bg-zinc-50 rounded-xl">
+                            <div className="text-sm font-semibold text-zinc-900 mb-2">Claude.ai (Cowork / Projects)</div>
+                            <ol className="text-sm text-zinc-600 space-y-1.5 list-decimal list-inside">
+                                <li>Copy skill content from the Skills Library tab</li>
+                                <li>Go to your Claude project &rarr; <strong>Knowledge</strong></li>
+                                <li>Paste as a new knowledge file</li>
+                            </ol>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* What are Plugins */}
+            <Card>
+                <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-zinc-900 mb-4" style={{ fontFamily: "var(--font-heading)" }}>
+                        What are Claude Plugins?
+                    </h3>
+                    <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+                        Plugins are curated <strong>bundles of skills + connectors</strong> built by Anthropic and partners.
+                        The Small Business plugin bundles 31 ready-made workflows with 12 app integrations
+                        so you don&apos;t have to wire anything yourself.
+                    </p>
+                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <div className="text-sm font-semibold text-amber-800 mb-1">How to browse all plugins</div>
+                        <p className="text-sm text-amber-700">
+                            In Claude Desktop or claude.ai, go to{" "}
+                            <a href="https://claude.ai/customize/skills" target="_blank" rel="noopener noreferrer" className="underline font-medium">
+                                Customize &rarr; Skills &amp; Plugins
+                            </a>
+                            {" "}to see the full directory. You can also manage installed plugins there.
+                        </p>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Plugin skills list */}
+            <Card className="border-zinc-200">
+                <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold text-zinc-900 mb-1" style={{ fontFamily: "var(--font-heading)" }}>
+                        31 Skills Included in the SMB Plugin
+                    </h3>
+                    <p className="text-xs text-zinc-500 mb-4">Type any of these as a slash command in Claude after installing</p>
+                    <div className="flex flex-wrap gap-2">
+                        {[
+                            "/business-pulse", "/call-list", "/canva-creator", "/cash-flow-snapshot", "/close-month",
+                            "/content-strategy", "/contract-review", "/crm-cleanup", "/crm-maintenance", "/customer-pulse",
+                            "/customer-pulse-check", "/friday-brief", "/handle-complaint", "/invoice-chase", "/job-post-builder",
+                            "/lead-triage", "/margin-analyzer", "/monday-brief", "/month-end-prep", "/month-heads-up",
+                            "/plan-payroll", "/price-check", "/quarterly-review", "/review-contract", "/run-campaign",
+                            "/sales-brief", "/smb-onboard", "/smb-router", "/tax-prep", "/tax-season-organizer",
+                            "/ticket-deflector",
+                        ].map((cmd) => (
+                            <span key={cmd} className="px-2.5 py-1 bg-zinc-100 text-zinc-700 rounded-lg text-xs font-mono">
+                                {cmd}
+                            </span>
+                        ))}
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-zinc-100">
+                        <h4 className="text-sm font-semibold text-zinc-900 mb-2">12 Connectors (via MCP)</h4>
+                        <div className="flex flex-wrap gap-2">
+                            {["QuickBooks", "PayPal", "HubSpot", "Canva", "Docusign", "Slack", "Stripe", "Square", "MS365", "Gmail", "Google Calendar", "Google Drive"].map((c) => (
+                                <span key={c} className="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium">
+                                    {c}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
 
 function ToolsTab() {
     return (
