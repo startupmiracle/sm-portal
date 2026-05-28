@@ -166,13 +166,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                             <div className="text-xs text-zinc-500">Claude SMB Workshop</div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className="text-sm text-zinc-500 hidden sm:block">{lead.email}</span>
-                        <a href="/auth/signout" className="flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 transition-colors">
-                            <LogOut className="w-4 h-4" />
-                            <span className="hidden sm:inline">Sign out</span>
-                        </a>
-                    </div>
+                    <span className="text-sm text-zinc-500 hidden sm:block">{lead.email}</span>
                 </div>
             </header>
 
@@ -183,7 +177,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                     lg:relative lg:translate-x-0 lg:pt-0
                     ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
                 `}>
-                    <div className="p-4 space-y-1">
+                    <div className="p-4 space-y-1 overflow-y-auto h-[calc(100%-60px)] pb-4">
                         {/* Welcome */}
                         <div className="px-3 py-3 mb-2">
                             <div className="text-xs text-zinc-400 uppercase tracking-wider font-medium">Welcome</div>
@@ -241,6 +235,17 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                         <Link href="/workshops" className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-zinc-500 hover:bg-zinc-50 mt-4 transition-colors">
                             &larr; My Workshops
                         </Link>
+                    </div>
+
+                    {/* Sign out — pinned bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-zinc-100 bg-white">
+                        <a
+                            href="/auth/signout"
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-zinc-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        >
+                            <LogOut className="w-4 h-4" />
+                            Sign out
+                        </a>
                     </div>
                 </aside>
 
