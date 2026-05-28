@@ -423,16 +423,32 @@ function ProfileTab({ lead, enriched, fullName }: { lead: WorkshopLead; enriched
                             <LayoutDashboard className="w-8 h-8 text-violet-600 mb-3" />
                             <h3 className="font-semibold text-zinc-900 text-lg">AI Assessment</h3>
                             <p className="text-sm text-zinc-600 mt-2 leading-relaxed">
-                                Full audit of your business through an AI lens. We map every process, score automation readiness, and deliver a prioritized roadmap.
+                                The foundation to grow your business with AI. We audit every process, score your automation readiness, and deliver a prioritized roadmap.
                             </p>
-                            <div className="mt-4 flex items-center gap-2">
-                                <Badge className="bg-amber-100 text-amber-700 border-amber-200">Workshop attendees: 50% off</Badge>
+                            <div className="mt-3 text-xs text-zinc-700 space-y-1">
+                                <div className="font-medium text-zinc-900">What&apos;s included:</div>
+                                <ul className="space-y-1 text-zinc-600">
+                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Full business process audit through an AI lens</li>
+                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Automation readiness scorecard + prioritized roadmap</li>
+                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Professional website (main page, automated lead intake, 5 blog articles featuring your services)</li>
+                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Google My Business profile setup</li>
+                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Custom URL + free hosting included</li>
+                                </ul>
+                            </div>
+                            <div className="mt-4 flex items-baseline gap-2">
+                                <span className="text-2xl font-bold text-zinc-900">$1,500</span>
+                                <span className="text-sm text-zinc-400 line-through">$3,000</span>
+                            </div>
+                            <div className="mt-2">
+                                <Badge className="bg-amber-100 text-amber-700 border-amber-200">AREA Workshop attendees</Badge>
                             </div>
                             <a
-                                href="mailto:javier@startupmiracle.com?subject=AI Assessment — Workshop Portal&body=Hi Javier, I'm interested in the AI Assessment."
+                                href="https://buy.stripe.com/4gM00k6VYgwy1Ah14d0kE0E?prefilled_promo_code=AREA50"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-violet-600 hover:bg-violet-700 transition-colors"
                             >
-                                Learn more
+                                Get Started
                                 <ExternalLink className="w-3.5 h-3.5" />
                             </a>
                         </CardContent>
