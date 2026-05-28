@@ -338,12 +338,43 @@ function ProfileTab({ lead, enriched, fullName }: { lead: WorkshopLead; enriched
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-                <InfoCard icon={<User className="w-4 h-4" />} label="You" items={[
-                    ["Name", fullName],
-                    ["Email", lead.email],
-                    ["Role", lead.role || "—"],
-                    ["Title", lead.job_title || "—"],
-                ]} />
+                <Card>
+                    <CardContent className="p-5">
+                        <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-zinc-500 font-medium mb-4">
+                            <User className="w-4 h-4" />You
+                        </div>
+                        <dl className="space-y-2.5">
+                            {([["Name", fullName], ["Email", lead.email], ["Role", lead.role || "—"], ["Title", lead.job_title || "—"]] as [string, string][]).map(([k, v]) => (
+                                <div key={k} className="flex items-start gap-3 text-sm">
+                                    <dt className="w-24 text-zinc-500 flex-shrink-0">{k}</dt>
+                                    <dd className="text-zinc-900 font-medium">{v}</dd>
+                                </div>
+                            ))}
+                        </dl>
+                        {(enriched.linkedin_url || enriched.twitter_url || enriched.instagram_url || enriched.facebook_url || enriched.youtube_url) && (
+                            <div className="mt-4 pt-3 border-t border-zinc-100">
+                                <div className="text-xs text-zinc-500 font-medium mb-2">Social</div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    {enriched.linkedin_url && (
+                                        <a href={String(enriched.linkedin_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium hover:bg-blue-100 transition-colors">LinkedIn</a>
+                                    )}
+                                    {enriched.twitter_url && (
+                                        <a href={String(enriched.twitter_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-100 text-zinc-700 text-xs font-medium hover:bg-zinc-200 transition-colors">X / Twitter</a>
+                                    )}
+                                    {enriched.instagram_url && (
+                                        <a href={String(enriched.instagram_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-pink-50 text-pink-700 text-xs font-medium hover:bg-pink-100 transition-colors">Instagram</a>
+                                    )}
+                                    {enriched.facebook_url && (
+                                        <a href={String(enriched.facebook_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium hover:bg-blue-100 transition-colors">Facebook</a>
+                                    )}
+                                    {enriched.youtube_url && (
+                                        <a href={String(enriched.youtube_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-50 text-red-700 text-xs font-medium hover:bg-red-100 transition-colors">YouTube</a>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
                 <InfoCard icon={<Building2 className="w-4 h-4" />} label="Your business" items={[
                     ["Company", lead.company_name || "—"],
                     ["Industry", lead.company_industry || "—"],
@@ -482,14 +513,6 @@ function IntelligenceTab({ enriched }: { enriched: Record<string, string | numbe
 
             {enriched.marketing_angle && (
                 <QuoteCard label="Our marketing angle for you" quote={String(enriched.marketing_angle)} />
-            )}
-
-            {(enriched.linkedin_url || enriched.twitter_url || enriched.instagram_url) && (
-                <div className="flex items-center gap-3 flex-wrap">
-                    {enriched.linkedin_url && <a href={String(enriched.linkedin_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium hover:bg-blue-100 transition-colors">LinkedIn</a>}
-                    {enriched.twitter_url && <a href={String(enriched.twitter_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-700 text-xs font-medium hover:bg-zinc-200 transition-colors">X / Twitter</a>}
-                    {enriched.instagram_url && <a href={String(enriched.instagram_url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-50 text-pink-700 text-xs font-medium hover:bg-pink-100 transition-colors">Instagram</a>}
-                </div>
             )}
 
             {enriched.ai_recommendations && (
