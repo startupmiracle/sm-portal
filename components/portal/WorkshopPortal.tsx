@@ -602,6 +602,10 @@ const RECOMMENDED_TOOLS: { name: string; description: string; url: string; cta: 
     { name: "Granola", description: "AI meeting notes. Every call auto-transcribed and summarized. Feed transcripts to Claude for long-term memory across sessions.", url: "https://granola.ai", cta: "Get Granola", color: "violet", icon: "mic" },
     { name: "Supabase", description: "Your database and CRM in one. Postgres, auth, realtime — the backbone for lead tracking, customer data, and AI agent memory.", url: "https://supabase.com", cta: "Get Supabase", color: "emerald", icon: "database" },
     { name: "Hermes Agent", description: "A persistent, self-improving AI assistant that lives in your Telegram, WhatsApp, browser, or Slack. Solves complex problems, finishes repetitive tasks, and gets smarter over time with long-term memory, integrations, and self-improvement loops.", url: "https://startupmiracle.com", cta: "Learn More", color: "fuchsia", icon: "bot" },
+    { name: "Slack", description: "Your virtual office. Connect multiple tools and bots via MCP connectors, run your Hermes Agent, and centralize team + AI communication in channels.", url: "https://slack.com", cta: "Get Slack", color: "violet", icon: "mic" },
+    { name: "Telegram", description: "The easiest hub for your Hermes Agent. Set up in minutes with Telegram BotFather — your AI assistant is always one message away, on any device.", url: "https://telegram.org/", cta: "Get Telegram", color: "blue", icon: "bot" },
+    { name: "HeyGen", description: "Create presenter and UGC videos with your AI avatar. Record once, generate unlimited variations. Connects to Claude via MCP for automated video workflows.", url: "https://www.heygen.com/", cta: "Get HeyGen", color: "rose", icon: "sparkles" },
+    { name: "Higgsfield", description: "Advanced creative studio for AI-generated video, images, and product shoots. Full MCP integration with Claude for end-to-end content pipelines.", url: "https://higgsfield.ai/", cta: "Get Higgsfield", color: "amber", icon: "sparkles" },
 ];
 
 function SetupGuideTab() {
@@ -978,6 +982,14 @@ function ToolsTab({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
                         </Card>
                     );
                 })}
+            </div>
+
+            <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl flex items-start gap-3">
+                <Wrench className="w-5 h-5 text-zinc-400 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-zinc-600">
+                    <span className="font-medium text-zinc-900">Pro tip:</span> Your downloaded skills already know this recommended tech stack.
+                    When in doubt, ask your <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-medium hover:underline">Claude Code</a> to set up and connect any of these tools for you.
+                </div>
             </div>
         </div>
     );
