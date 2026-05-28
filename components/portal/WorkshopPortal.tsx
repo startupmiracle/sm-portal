@@ -65,8 +65,8 @@ type Tab = "profile" | "intelligence" | "skills" | "setup" | "tools" | "assessme
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "profile", label: "Your Profile", icon: <User className="w-4 h-4" /> },
     { id: "intelligence", label: "Intelligence", icon: <Sparkles className="w-4 h-4" /> },
-    { id: "skills", label: "Skills Library", icon: <Download className="w-4 h-4" /> },
     { id: "setup", label: "Setup Guide", icon: <BookOpen className="w-4 h-4" /> },
+    { id: "skills", label: "Skills Library", icon: <Download className="w-4 h-4" /> },
     { id: "tools", label: "Recommended Tools", icon: <Wrench className="w-4 h-4" /> },
     { id: "assessment", label: "Self-Assessment", icon: <ClipboardList className="w-4 h-4" /> },
 ];
@@ -598,7 +598,9 @@ function SetupGuideTab() {
     const SMB_PLUGIN_URL = "https://claude.ai/redirect/claudedotcom.v1.247c9b25-baef-4c4f-8740-ff802e986118/desktop/customize/plugins/new?marketplace=anthropics/knowledge-work-plugins&plugin=small-business";
 
     return (
-        <div className="space-y-8">
+        <div className="flex gap-6">
+            {/* Main content */}
+            <div className="flex-1 min-w-0 space-y-8">
             <div>
                 <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>
                     Setup Guide: Skills &amp; Plugins
@@ -876,6 +878,31 @@ function SetupGuideTab() {
                     </div>
                 </CardContent>
             </Card>
+            </div>
+
+            {/* Right sidebar — Claude signup banner */}
+            <div className="hidden xl:block w-56 flex-shrink-0">
+                <div className="sticky top-20">
+                    <a
+                        href="https://claude.ai/login"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block rounded-2xl overflow-hidden border border-zinc-200 hover:border-emerald-300 hover:shadow-lg transition-all group"
+                    >
+                        <img
+                            src="/images/claude-signup-banner.png"
+                            alt="Create your Claude account — Think fast, build faster"
+                            className="w-full"
+                        />
+                        <div className="p-3 bg-white text-center">
+                            <div className="text-xs font-semibold text-zinc-900">Don&apos;t have Claude yet?</div>
+                            <div className="text-[11px] text-emerald-600 font-medium mt-0.5 group-hover:underline">
+                                Create free account &rarr;
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
     );
 }
