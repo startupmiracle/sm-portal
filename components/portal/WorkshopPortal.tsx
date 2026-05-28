@@ -589,9 +589,25 @@ function SkillsTab({
 
     return (
         <div className="space-y-8">
+            {/* Hero — before/after */}
             <div>
-                <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>Your Claude Skill Library</h2>
-                <p className="text-sm text-zinc-500 mt-1">Download each SKILL.md → drop into <code className="px-1 py-0.5 bg-zinc-100 rounded text-xs">~/.claude/skills/</code> or paste into a Claude project.</p>
+                <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>
+                    From sticky notes to a system that sells for you
+                </h2>
+                <p className="text-sm text-zinc-500 mt-1 max-w-xl">
+                    These skills turn Claude into your sales team, content engine, and operations manager — personalized to your business.
+                </p>
+            </div>
+            <ZoomImage
+                src="/images/skills-hero.jpg"
+                alt="Before: missed calls, overdue invoices, no website. After: AI-powered CRM, automated follow-ups, content publishing, Stripe payments — all connected."
+                className="w-full rounded-2xl border border-zinc-200 shadow-sm"
+            />
+
+            {/* Skills section */}
+            <div>
+                <h3 className="text-lg font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>Download your skills</h3>
+                <p className="text-sm text-zinc-500 mt-1">Each skill is a <code className="px-1 py-0.5 bg-zinc-100 rounded text-xs">.SKILL.md</code> file personalized with your data, discovery answers, and gap actions.</p>
             </div>
 
             {/* How to upload skills */}
