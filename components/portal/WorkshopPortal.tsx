@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -71,9 +71,27 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "assessment", label: "Self-Assessment", icon: <ClipboardList className="w-4 h-4" /> },
 ];
 
+const VALID_TABS = new Set<string>(["profile", "intelligence", "skills", "setup", "tools", "assessment"]);
+
 export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
-    const [activeTab, setActiveTab] = useState<Tab>("profile");
+    const [activeTab, setActiveTabState] = useState<Tab>("profile");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const setActiveTab = useCallback((tab: Tab) => {
+        setActiveTabState(tab);
+        window.history.replaceState(null, "", `#${tab}`);
+    }, []);
+
+    // Read hash on mount + listen for popstate
+    useEffect(() => {
+        const readHash = () => {
+            const hash = window.location.hash.replace("#", "");
+            if (VALID_TABS.has(hash)) setActiveTabState(hash as Tab);
+        };
+        readHash();
+        window.addEventListener("hashchange", readHash);
+        return () => window.removeEventListener("hashchange", readHash);
+    }, []);
     const [discoveryAnswers, setDiscoveryAnswers] = useState<Record<string, DiscoveryValue>>(
         (lead.discovery_answers as Record<string, DiscoveryValue>) || {}
     );
@@ -500,6 +518,38 @@ function SkillsTab({
                 <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>Your Claude Skill Library</h2>
                 <p className="text-sm text-zinc-500 mt-1">Download each SKILL.md → drop into <code className="px-1 py-0.5 bg-zinc-100 rounded text-xs">~/.claude/skills/</code> or paste into a Claude project.</p>
             </div>
+
+            {/* How to upload skills */}
+            <Card className="border-amber-200 bg-amber-50/50">
+                <CardContent className="p-5">
+                    <div className="flex flex-col md:flex-row gap-5">
+                        <div className="flex-1">
+                            <h3 className="font-semibold text-zinc-900 mb-2 flex items-center gap-2">
+                                <Download className="w-4 h-4 text-amber-600" />
+                                How to upload a skill to Claude Desktop
+                            </h3>
+                            <div className="text-sm text-zinc-600 space-y-2">
+                                <p>Follow this path inside the Claude Desktop app:</p>
+                                <div className="flex items-center gap-1.5 flex-wrap text-xs font-medium">
+                                    <span className="px-2 py-1 bg-white rounded-lg border border-zinc-200">Claude</span>
+                                    <span className="text-zinc-400">&rarr;</span>
+                                    <span className="px-2 py-1 bg-white rounded-lg border border-zinc-200">Settings</span>
+                                    <span className="text-zinc-400">&rarr;</span>
+                                    <span className="px-2 py-1 bg-white rounded-lg border border-zinc-200">Skills</span>
+                                    <span className="text-zinc-400">&rarr;</span>
+                                    <span className="px-2 py-1 bg-white rounded-lg border border-zinc-200">+ Create a Skill</span>
+                                    <span className="text-zinc-400">&rarr;</span>
+                                    <span className="px-2 py-1 bg-amber-100 text-amber-800 rounded-lg border border-amber-200">Upload a Skill</span>
+                                </div>
+                                <p className="text-xs text-zinc-500 mt-2">Select the <code className="px-1 py-0.5 bg-white rounded text-[11px]">.SKILL.md</code> file you downloaded from below. Claude will recognize it immediately.</p>
+                            </div>
+                        </div>
+                        <div className="md:w-80 flex-shrink-0">
+                            <img src="/images/claude-skills-upload.jpg" alt="Claude Desktop — Settings → Skills → Create a Skill → Upload a Skill" className="w-full rounded-lg border border-zinc-200 shadow-sm" />
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
 
             <div className="grid md:grid-cols-2 gap-4">
                 {fiveSkills.map((s) => {
