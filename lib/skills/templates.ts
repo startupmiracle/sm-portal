@@ -110,42 +110,52 @@ export const SKILL_CATALOG: SkillMeta[] = [
 export const DISCOVERY_QUESTIONS: { key: string; label: string; description: string }[] = [
     {
         key: "website",
-        label: "Do you have a website?",
+        label: "1. Do you have a website?",
         description: "A real one — fast, mobile, clear offer above the fold.",
     },
     {
         key: "opt_in_form",
-        label: "Is there a frictionless opt-in form on your website?",
+        label: "2. Is there a frictionless opt-in form on your website?",
         description: "3 fields max, no friction, capturing TCPA-compliant consent.",
     },
     {
         key: "blog",
-        label: "Are you publishing content Google + ChatGPT can read?",
+        label: "3. Are you publishing content Google + ChatGPT can read?",
         description: "Blog with proper schema, AEO-optimized, indexed weekly.",
     },
     {
         key: "crm",
-        label: "Do you have a CRM + fast-response + follow-up system?",
-        description: "Speed to first reply under 5 minutes, automated follow-up cadence.",
+        label: "4. Do you have a CRM (Customer Relationship Management)?",
+        description: "A system where all your leads, customers, and conversations are tracked in one place.",
+    },
+    {
+        key: "crm_fast_response",
+        label: "5. Does your CRM allow you to respond to leads fast?",
+        description: "Speed to first reply under 5 minutes. Instant notifications when a new lead comes in.",
+    },
+    {
+        key: "crm_followup",
+        label: "6. Do you have a follow-up system for leads and existing customers?",
+        description: "Automated sequences, reminders, and cadences so no lead falls through the cracks.",
     },
     {
         key: "offer_clarity",
-        label: "Is your offer crystal clear?",
+        label: "7. Is your offer crystal clear?",
         description: "A 10-year-old should understand what you sell and the outcome in 10 seconds.",
     },
     {
         key: "pricing_alignment",
-        label: "Is your pricing aligned to your target customer?",
+        label: "8. Is your pricing aligned to your target customer?",
         description: "Not too low (cheap signals), not too high (locks you out), tiers if needed.",
     },
     {
         key: "backend_offer",
-        label: "Do you have a backend offer to upsell + retain?",
+        label: "9. Do you have a backend offer to upsell + retain?",
         description: "Once they buy the first thing, what keeps them paying you next month?",
     },
     {
         key: "referral_system",
-        label: "Can customers easily refer you?",
+        label: "10. Can customers easily refer you?",
         description: "A shareable link, an incentive, a moment in the journey where you ask.",
     },
 ];
@@ -732,7 +742,9 @@ export function recommendSkills(lead: WorkshopLead): SkillSlug[] {
     const answers = lead.discovery_answers || {};
     const recs = new Set<SkillSlug>();
 
-    if (answers.crm === "no" || answers.opt_in_form === "no") recs.add("more-sales");
+    if (answers.crm === "no" || answers.crm_fast_response === "no" || answers.crm_followup === "no" || answers.opt_in_form === "no") recs.add("more-sales");
+    if (answers.crm_fast_response === "no") recs.add("answer-faster");
+    if (answers.crm_followup === "no") recs.add("qualify-leads");
     if (answers.blog === "no") recs.add("publish-content");
     if (answers.website === "no" || answers.offer_clarity === "no") recs.add("publish-content");
 

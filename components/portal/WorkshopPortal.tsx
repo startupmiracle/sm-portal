@@ -284,6 +284,8 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                             discoveryAnswers={discoveryAnswers}
                             savingDiscovery={savingDiscovery}
                             onAnswer={setAnswer}
+                            enriched={enriched}
+                            lead={lead}
                         />
                     )}
                 </main>
@@ -950,39 +952,92 @@ function ToolsTab({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
     );
 }
 
-function AssessmentTab({ discoveryAnswers, savingDiscovery, onAnswer }: {
+function AssessmentTab({ discoveryAnswers, savingDiscovery, onAnswer, enriched, lead }: {
     discoveryAnswers: Record<string, DiscoveryValue>;
     savingDiscovery: boolean;
     onAnswer: (key: string, value: DiscoveryValue) => void;
+    enriched: Record<string, string | number | null>;
+    lead: WorkshopLead;
 }) {
+    // Auto-populate suggestions based on enrichment data
+    const autoSuggestions: Record<string, { value: DiscoveryValue; reason: string }> = {};
+
+    if (enriched.website_status === "live" || enriched.website_url) {
+        autoSuggestions.website = { value: "yes", reason: `We found your site: ${enriched.website_url || "live"}` };
+    }
+
+    const analysisText = String(enriched.website_analysis || "").toLowerCase();
+    if (analysisText.includes("lead capture") || analysisText.includes("opt-in") || analysisText.includes("contact form")) {
+        autoSuggestions.opt_in_form = analysisText.includes("lack") || analysisText.includes("missing") || analysisText.includes("no lead capture") || analysisText.includes("could benefit")
+            ? { value: "no", reason: "Our audit found no lead capture form on your site" }
+            : { value: "yes", reason: "We detected a form on your site" };
+    } else if (enriched.website_status === "live") {
+        autoSuggestions.opt_in_form = { value: "no", reason: "No lead capture form detected during site audit" };
+    }
+
+    if (enriched.linkedin_url || enriched.twitter_url) {
+        autoSuggestions.blog = { value: "unsure", reason: "You have social presence — but do you publish indexable blog content?" };
+    }
+
+    const businessTask = (lead.business_task || "").toLowerCase();
+    if (/crm|hubspot|supabase|salesforce/.test(businessTask) || /crm/.test(String(enriched.services || "").toLowerCase())) {
+        autoSuggestions.crm = { value: "yes", reason: "You mentioned CRM in your registration" };
+    }
+
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>2-Minute Self-Assessment</h2>
+                <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>Self-Assessment</h2>
                 <p className="text-sm text-zinc-500 mt-1">Your answers tune every skill and the 30/60/90 plan. Update anytime.</p>
+                {Object.keys(autoSuggestions).length > 0 && Object.keys(discoveryAnswers).length === 0 && (
+                    <div className="mt-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-2">
+                        <Sparkles className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                        <div className="text-sm text-emerald-700">
+                            We pre-filled some answers based on your enrichment data. Review and adjust — you know your business best.
+                        </div>
+                    </div>
+                )}
             </div>
             <Card>
                 <CardContent className="p-0 divide-y divide-zinc-100">
-                    {DISCOVERY_QUESTIONS.map((q) => (
-                        <div key={q.key} className="p-5 flex items-start justify-between gap-4">
-                            <div className="flex-1">
-                                <div className="font-medium text-zinc-900 text-sm">{q.label}</div>
-                                <div className="text-xs text-zinc-500 mt-1">{q.description}</div>
+                    {DISCOVERY_QUESTIONS.map((q) => {
+                        const current = discoveryAnswers[q.key];
+                        const suggestion = autoSuggestions[q.key];
+                        const displayValue = current || suggestion?.value;
+
+                        return (
+                            <div key={q.key} className="p-5">
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex-1">
+                                        <div className="font-medium text-zinc-900 text-sm">{q.label}</div>
+                                        <div className="text-xs text-zinc-500 mt-1">{q.description}</div>
+                                        {suggestion && !current && (
+                                            <div className="mt-1.5 text-[11px] text-emerald-600 flex items-center gap-1">
+                                                <Sparkles className="w-3 h-3" />
+                                                {suggestion.reason}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {(["yes", "no", "unsure"] as DiscoveryValue[]).map((v) => (
+                                            <button key={v} onClick={() => onAnswer(q.key, v)}
+                                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                                                    displayValue === v
+                                                        ? v === "yes"
+                                                            ? current ? "bg-emerald-600 text-white" : "bg-emerald-400 text-white ring-1 ring-emerald-300 ring-offset-1"
+                                                            : v === "no"
+                                                            ? current ? "bg-rose-600 text-white" : "bg-rose-400 text-white ring-1 ring-rose-300 ring-offset-1"
+                                                            : current ? "bg-zinc-600 text-white" : "bg-zinc-400 text-white ring-1 ring-zinc-300 ring-offset-1"
+                                                        : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                                                }`}>
+                                                {v}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex gap-2">
-                                {(["yes", "no", "unsure"] as DiscoveryValue[]).map((v) => (
-                                    <button key={v} onClick={() => onAnswer(q.key, v)}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                                            discoveryAnswers[q.key] === v
-                                                ? v === "yes" ? "bg-emerald-600 text-white" : v === "no" ? "bg-rose-600 text-white" : "bg-zinc-600 text-white"
-                                                : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                                        }`}>
-                                        {v}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                     {savingDiscovery && (
                         <div className="px-5 py-3 text-xs text-zinc-500 flex items-center gap-2">
                             <Loader2 className="w-3 h-3 animate-spin" /> Saving...
