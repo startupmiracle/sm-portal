@@ -628,6 +628,56 @@ function SetupGuideTab() {
                 </div>
             </div>
 
+            {/* Visual tour: Getting to know Claude Customization */}
+            <div>
+                <h3 className="text-lg font-semibold text-zinc-900 mb-2" style={{ fontFamily: "var(--font-heading)" }}>
+                    Getting to Know Claude Customization
+                </h3>
+                <p className="text-sm text-zinc-500 mb-4">Here&apos;s what each section of Claude&apos;s Customize menu looks like. Tap any image to enlarge.</p>
+                <div className="grid md:grid-cols-2 gap-4">
+                    <Card className="overflow-hidden">
+                        <CardContent className="p-4">
+                            <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-2 flex items-center gap-2">
+                                <span className="w-5 h-5 rounded-full bg-violet-500 text-white flex items-center justify-center text-[10px] font-bold">1</span>
+                                Customize Home
+                            </div>
+                            <p className="text-xs text-zinc-500 mb-3">Connect apps, create skills, or browse plugins — all from one place.</p>
+                            <img src="/images/claude-customize-home.jpg" alt="Claude Customize home — Connect apps, Create skills, Browse plugins" className="w-full rounded-lg border border-zinc-200" />
+                        </CardContent>
+                    </Card>
+                    <Card className="overflow-hidden">
+                        <CardContent className="p-4">
+                            <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-2 flex items-center gap-2">
+                                <span className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold">2</span>
+                                Skills Directory
+                            </div>
+                            <p className="text-xs text-zinc-500 mb-3">Browse and install individual skills by Anthropic and partners. Each one teaches Claude a new workflow.</p>
+                            <img src="/images/claude-skills-directory.jpg" alt="Claude Skills Directory — browsable skills like /canvas-design, /doc-coauthoring" className="w-full rounded-lg border border-zinc-200" />
+                        </CardContent>
+                    </Card>
+                    <Card className="overflow-hidden">
+                        <CardContent className="p-4">
+                            <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-2 flex items-center gap-2">
+                                <span className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">3</span>
+                                Connectors Directory
+                            </div>
+                            <p className="text-xs text-zinc-500 mb-3">Connect Claude to the apps you already use — Gmail, Slack, Google Drive, Canva, and more.</p>
+                            <img src="/images/claude-connectors-directory.jpg" alt="Claude Connectors — Canva, Gmail, Google Drive, Slack, Microsoft 365" className="w-full rounded-lg border border-zinc-200" />
+                        </CardContent>
+                    </Card>
+                    <Card className="overflow-hidden">
+                        <CardContent className="p-4">
+                            <div className="text-xs uppercase tracking-wider text-zinc-500 font-medium mb-2 flex items-center gap-2">
+                                <span className="w-5 h-5 rounded-full bg-fuchsia-500 text-white flex items-center justify-center text-[10px] font-bold">4</span>
+                                Plugin Preview: Productivity
+                            </div>
+                            <p className="text-xs text-zinc-500 mb-3">Each plugin bundles skills and connectors. Here&apos;s the Productivity plugin with task management, memory, and more.</p>
+                            <img src="/images/claude-plugin-productivity.jpg" alt="Claude Productivity plugin — /memory-management, /start, /task-management, /update" className="w-full rounded-lg border border-zinc-200" />
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+
             {/* What are Skills */}
             <Card>
                 <CardContent className="p-6">
