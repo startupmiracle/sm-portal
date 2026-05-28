@@ -595,21 +595,28 @@ function SkillsTab({
     );
 }
 
-const RECOMMENDED_TOOLS: { name: string; description: string; url: string; cta: string; color: string; icon: string }[] = [
-    { name: "Claude", description: "Your AI chief of staff. Best-in-class reasoning for writing, strategy, code, and decision-making. Powers every skill in this portal.", url: "https://claude.ai", cta: "Get Claude", color: "amber", icon: "sparkles" },
-    { name: "Claude Skills for SMBs", description: "The 7 skills you downloaded here — install them in Claude Code or paste into Claude.ai projects. They turn Claude into your employee.", url: "#skills", cta: "View Skills", color: "emerald", icon: "download" },
-    { name: "Linear", description: "Project management that humans and AI agents share. Track your 30/60/90 plan, assign tasks to yourself or AI, weekly reviews built in.", url: "https://linear.app", cta: "Get Linear", color: "indigo", icon: "kanban" },
-    { name: "Granola", description: "AI meeting notes. Every call auto-transcribed and summarized. Feed transcripts to Claude for long-term memory across sessions.", url: "https://granola.ai", cta: "Get Granola", color: "violet", icon: "mic" },
-    { name: "Supabase", description: "Your database and CRM in one. Postgres, auth, realtime — the backbone for lead tracking, customer data, and AI agent memory.", url: "https://supabase.com", cta: "Get Supabase", color: "emerald", icon: "database" },
-    { name: "Hermes Agent", description: "A persistent, self-improving AI assistant that lives in your Telegram, WhatsApp, browser, or Slack. Solves complex problems, finishes repetitive tasks, and gets smarter over time with long-term memory, integrations, and self-improvement loops.", url: "https://hermes-agent.nousresearch.com/", cta: "Learn More", color: "fuchsia", icon: "bot" },
-    { name: "Slack", description: "Your virtual office. Connect multiple tools and bots via MCP connectors, run your Hermes Agent, and centralize team + AI communication in channels.", url: "https://slack.com", cta: "Get Slack", color: "violet", icon: "mic" },
-    { name: "Telegram", description: "The easiest hub for your Hermes Agent. Set up in minutes with Telegram BotFather — your AI assistant is always one message away, on any device.", url: "https://telegram.org/", cta: "Get Telegram", color: "blue", icon: "bot" },
-    { name: "HeyGen", description: "Create presenter and UGC videos with your AI avatar. Record once, generate unlimited variations. Connects to Claude via MCP for automated video workflows.", url: "https://www.heygen.com/", cta: "Get HeyGen", color: "rose", icon: "sparkles" },
-    { name: "Higgsfield", description: "Advanced creative studio for AI-generated video, images, and product shoots. Full MCP integration with Claude for end-to-end content pipelines.", url: "https://higgsfield.ai/", cta: "Get Higgsfield", color: "amber", icon: "sparkles" },
-    { name: "Bitwarden", description: "Centralized password and secrets manager. Store API keys, credentials, and tokens in one vault — then share access securely with your agents (Claude, Hermes, Codex).", url: "https://bitwarden.com/", cta: "Get Bitwarden", color: "blue", icon: "database" },
-    { name: "Cloudflare", description: "Manage your domains, DNS records, and security in one place. Free SSL, DDoS protection, and bot management for every site you run.", url: "https://www.cloudflare.com/", cta: "Get Cloudflare", color: "amber", icon: "database" },
-    { name: "Vercel", description: "Host your websites and web apps securely — free tier included. One-click deploys from GitHub, instant previews, and edge performance out of the box.", url: "https://vercel.com/", cta: "Get Vercel", color: "indigo", icon: "kanban" },
-    { name: "Microsoft Azure", description: "12 months of free virtual private servers to host your Hermes agents. Always-on compute for AI assistants that need to run 24/7.", url: "https://azure.microsoft.com/en-us/pricing/free-services", cta: "Get Free VPS", color: "blue", icon: "database" },
+type ToolCategory = "All" | "AI Agents" | "Website" | "Email" | "Banking" | "Payments" | "Database" | "Communications" | "Project Management" | "Creative" | "Security";
+
+const TOOL_CATEGORIES: ToolCategory[] = ["All", "AI Agents", "Creative", "Communications", "Database", "Email", "Payments", "Banking", "Website", "Security", "Project Management"];
+
+const RECOMMENDED_TOOLS: { name: string; description: string; url: string; cta: string; color: string; icon: string; category: ToolCategory }[] = [
+    { name: "Claude", description: "Your AI chief of staff. Best-in-class reasoning for writing, strategy, code, and decision-making. Powers every skill in this portal.", url: "https://claude.ai", cta: "Get Claude", color: "amber", icon: "sparkles", category: "AI Agents" },
+    { name: "Claude Skills for SMBs", description: "The 7 skills you downloaded here — install them in Claude Code or paste into Claude.ai projects. They turn Claude into your employee.", url: "#skills", cta: "View Skills", color: "emerald", icon: "download", category: "AI Agents" },
+    { name: "Hermes Agent", description: "A persistent, self-improving AI assistant that lives in your Telegram, WhatsApp, browser, or Slack. Solves complex problems, finishes repetitive tasks, and gets smarter over time with long-term memory, integrations, and self-improvement loops.", url: "https://hermes-agent.nousresearch.com/", cta: "Learn More", color: "fuchsia", icon: "bot", category: "AI Agents" },
+    { name: "HeyGen", description: "Create presenter and UGC videos with your AI avatar. Record once, generate unlimited variations. Connects to Claude via MCP for automated video workflows.", url: "https://www.heygen.com/", cta: "Get HeyGen", color: "rose", icon: "sparkles", category: "Creative" },
+    { name: "Higgsfield", description: "Advanced creative studio for AI-generated video, images, and product shoots. Full MCP integration with Claude for end-to-end content pipelines.", url: "https://higgsfield.ai/", cta: "Get Higgsfield", color: "amber", icon: "sparkles", category: "Creative" },
+    { name: "Slack", description: "Your virtual office. Connect multiple tools and bots via MCP connectors, run your Hermes Agent, and centralize team + AI communication in channels.", url: "https://slack.com", cta: "Get Slack", color: "violet", icon: "mic", category: "Communications" },
+    { name: "Telegram", description: "The easiest hub for your Hermes Agent. Set up in minutes with Telegram BotFather — your AI assistant is always one message away, on any device.", url: "https://telegram.org/", cta: "Get Telegram", color: "blue", icon: "bot", category: "Communications" },
+    { name: "Granola", description: "AI meeting notes. Every call auto-transcribed and summarized. Feed transcripts to Claude for long-term memory across sessions.", url: "https://granola.ai", cta: "Get Granola", color: "violet", icon: "mic", category: "Communications" },
+    { name: "Supabase", description: "Your database and CRM in one. Postgres, auth, realtime — the backbone for lead tracking, customer data, and AI agent memory.", url: "https://supabase.com", cta: "Get Supabase", color: "emerald", icon: "database", category: "Database" },
+    { name: "Resend", description: "Transactional emails that land in your client's main inbox — not spam. Beautiful templates, webhooks, and analytics. Built for developers and AI agents alike.", url: "https://resend.com/", cta: "Get Resend", color: "blue", icon: "mic", category: "Email" },
+    { name: "Stripe", description: "Process payments easily — one-off charges, recurring subscriptions, invoices. Payment links, checkout pages, and webhooks that plug into your CRM and automations.", url: "https://stripe.com/", cta: "Get Stripe", color: "violet", icon: "database", category: "Payments" },
+    { name: "Mercury Bank", description: "Your company's bank account with Stripe fully integrated, accounting books due-diligence ready, and your CPA costs down. Built for startups and SMBs.", url: "https://mercury.com/", cta: "Get Mercury", color: "indigo", icon: "database", category: "Banking" },
+    { name: "Vercel", description: "Host your websites and web apps securely — free tier included. One-click deploys from GitHub, instant previews, and edge performance out of the box.", url: "https://vercel.com/", cta: "Get Vercel", color: "indigo", icon: "kanban", category: "Website" },
+    { name: "Cloudflare", description: "Manage your domains, DNS records, and security in one place. Free SSL, DDoS protection, and bot management for every site you run.", url: "https://www.cloudflare.com/", cta: "Get Cloudflare", color: "amber", icon: "database", category: "Website" },
+    { name: "Bitwarden", description: "Centralized password and secrets manager. Store API keys, credentials, and tokens in one vault — then share access securely with your agents (Claude, Hermes, Codex).", url: "https://bitwarden.com/", cta: "Get Bitwarden", color: "blue", icon: "database", category: "Security" },
+    { name: "Microsoft Azure", description: "12 months of free virtual private servers to host your Hermes agents. Always-on compute for AI assistants that need to run 24/7.", url: "https://azure.microsoft.com/en-us/pricing/free-services", cta: "Get Free VPS", color: "blue", icon: "database", category: "Website" },
+    { name: "Linear", description: "Project management that humans and AI agents share. Track your 30/60/90 plan, assign tasks to yourself or AI, weekly reviews built in.", url: "https://linear.app", cta: "Get Linear", color: "indigo", icon: "kanban", category: "Project Management" },
 ];
 
 function SetupGuideTab() {
@@ -949,14 +956,38 @@ function SetupGuideTab() {
 }
 
 function ToolsTab({ onNavigate }: { onNavigate: (tab: Tab) => void }) {
+    const [activeCategory, setActiveCategory] = useState<ToolCategory>("All");
+    const filtered = activeCategory === "All" ? RECOMMENDED_TOOLS : RECOMMENDED_TOOLS.filter(t => t.category === activeCategory);
+
     return (
         <div className="space-y-6">
             <div>
                 <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>Recommended Tools</h2>
-                <p className="text-sm text-zinc-500 mt-1">The proven stack we use and recommend. Each tool has been battle-tested across our SMB clients.</p>
+                <p className="text-sm text-zinc-500 mt-1">The proven stack we use and recommend. Every tool integrates with Claude and Claude Code for setup.</p>
             </div>
+
+            {/* Category pills */}
+            <div className="flex flex-wrap gap-2">
+                {TOOL_CATEGORIES.map((cat) => {
+                    const count = cat === "All" ? RECOMMENDED_TOOLS.length : RECOMMENDED_TOOLS.filter(t => t.category === cat).length;
+                    return (
+                        <button
+                            key={cat}
+                            onClick={() => setActiveCategory(cat)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                                activeCategory === cat
+                                    ? "bg-zinc-900 text-white"
+                                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                            }`}
+                        >
+                            {cat} <span className="ml-1 opacity-60">{count}</span>
+                        </button>
+                    );
+                })}
+            </div>
+
             <div className="grid md:grid-cols-2 gap-4">
-                {RECOMMENDED_TOOLS.map((tool) => {
+                {filtered.map((tool) => {
                     const c = COLOR_MAP[tool.color] || COLOR_MAP.emerald;
                     return (
                         <Card key={tool.name} className={`hover:shadow-md transition-all ${c.border}`}>
