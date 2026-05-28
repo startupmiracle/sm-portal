@@ -410,6 +410,69 @@ function DeckTab() {
             <p className="text-xs text-gray-400 text-center">
                 Tip: haz clic en &quot;Presentation Mode&quot; para pantalla completa, o presiona Esc para salir.
             </p>
+
+            {/* Live Demos */}
+            <div className="mt-10 pt-8 border-t border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Live Demos</h3>
+                <p className="text-sm text-gray-500 mb-5">Sistemas reales que construimos con AI. Pruébalos en vivo.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {/* Speed-2-Lead — SM */}
+                    <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
+                        <Image
+                            src="/sm-workshop-assets/demo-s2l.png"
+                            alt="Speed To Lead System — Startup Miracle"
+                            width={800}
+                            height={450}
+                            className="w-full h-auto"
+                        />
+                        <div className="p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Live Demo</span>
+                                <span className="text-xs text-gray-400">Speed-2-Lead</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">Speed To Lead System &mdash; Startup Miracle</h4>
+                            <p className="text-sm text-gray-500 mt-1">
+                                AI Voice Agent + WhatsApp que responde todas nuestras llamadas, educa y califica leads, y agenda citas con Javier. 24/7.
+                            </p>
+                            <a
+                                href="tel:+19546068076"
+                                className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
+                            >
+                                <PhoneOff className="w-4 h-4" />
+                                Llama al (954) 606-8076
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Business Concierge — Francisca */}
+                    <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
+                        <Image
+                            src="/sm-workshop-assets/demo-francisca.jpg"
+                            alt="Business Concierge System — Francisca Restaurant"
+                            width={800}
+                            height={450}
+                            className="w-full h-auto"
+                        />
+                        <div className="p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Demo en Vivo</span>
+                                <span className="text-xs text-gray-400">Business Concierge</span>
+                            </div>
+                            <h4 className="font-semibold text-gray-900">Business Concierge &mdash; Francisca Restaurant</h4>
+                            <p className="text-sm text-gray-500 mt-1">
+                                Virtual host para reservaciones, preguntas del menú, ubicaciones, pedidos online y conexión con franquicias. Responde llamadas y WhatsApp.
+                            </p>
+                            <a
+                                href="tel:+17864326524"
+                                className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
+                            >
+                                <PhoneOff className="w-4 h-4" />
+                                Llama al (786) 432-6524
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
