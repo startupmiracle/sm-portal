@@ -407,7 +407,7 @@ function ProfileTab({ lead, enriched, fullName }: { lead: WorkshopLead; enriched
                                 <span className="text-xs text-zinc-500">includes recording + memo</span>
                             </div>
                             <a
-                                href="https://buy.stripe.com/test_dRm4gA5RU802en314d0kE01"
+                                href="https://buy.stripe.com/fZu28s802fsu2El4gp0kE0F"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors"
