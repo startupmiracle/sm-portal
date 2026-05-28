@@ -678,6 +678,64 @@ function SetupGuideTab() {
                 </div>
             </div>
 
+            {/* Official Claude Plugins to install */}
+            <div>
+                <h3 className="text-lg font-semibold text-zinc-900 mb-2" style={{ fontFamily: "var(--font-heading)" }}>
+                    Official Plugins We Recommend
+                </h3>
+                <p className="text-sm text-zinc-500 mb-4">Install these directly from Anthropic. Each one adds specialized skills and connectors to your Claude.</p>
+                <div className="grid md:grid-cols-3 gap-4">
+                    {[
+                        {
+                            name: "Small Business",
+                            description: "31 skills for payroll, CRM, invoicing, content strategy + 12 connectors (QuickBooks, Stripe, HubSpot, Gmail).",
+                            url: "https://claude.ai/redirect/claudedotcom.v1.247c9b25-baef-4c4f-8740-ff802e986118/desktop/customize/plugins/new?marketplace=anthropics/knowledge-work-plugins&plugin=small-business",
+                            color: "emerald",
+                            badge: "Must install",
+                        },
+                        {
+                            name: "Productivity",
+                            description: "Task management, two-tier memory, daily briefings. Syncs with calendar, email, and chat.",
+                            url: "https://claude.ai/directory/plugins/productivity%40Anthropic%20%26%20Partners",
+                            color: "violet",
+                            image: "/images/claude-plugin-productivity.jpg",
+                        },
+                        {
+                            name: "Sales",
+                            description: "Prospect research, call prep, competitive intel, deal strategy, personalized outreach. Customized for Startup Miracle.",
+                            url: "https://claude.ai/directory/plugins/sales%40My%20Uploads",
+                            color: "amber",
+                            image: "/images/claude-plugin-sales.jpg",
+                        },
+                    ].map((plugin) => {
+                        const c = COLOR_MAP[plugin.color] || COLOR_MAP.emerald;
+                        return (
+                            <Card key={plugin.name} className={`${c.border} hover:shadow-md transition-all`}>
+                                <CardContent className="p-5 flex flex-col h-full">
+                                    {plugin.badge && (
+                                        <Badge className={`${c.bg} ${c.text} ${c.border} mb-3 w-fit text-[10px]`}>{plugin.badge}</Badge>
+                                    )}
+                                    {plugin.image && (
+                                        <img src={plugin.image} alt={plugin.name} className="w-full rounded-lg border border-zinc-200 mb-3" />
+                                    )}
+                                    <h4 className="font-semibold text-zinc-900">{plugin.name}</h4>
+                                    <p className="text-xs text-zinc-600 mt-1.5 leading-relaxed flex-1">{plugin.description}</p>
+                                    <a
+                                        href={plugin.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`mt-4 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-medium ${c.bg} ${c.text} hover:opacity-80 transition-opacity w-full`}
+                                    >
+                                        Install Plugin
+                                        <ExternalLink className="w-3.5 h-3.5" />
+                                    </a>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+            </div>
+
             {/* What are Skills */}
             <Card>
                 <CardContent className="p-6">
