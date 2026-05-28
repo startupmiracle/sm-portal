@@ -432,7 +432,7 @@ function DeckTab() {
                             </div>
                             <h4 className="font-semibold text-gray-900">Speed To Lead System &mdash; Startup Miracle</h4>
                             <p className="text-sm text-gray-500 mt-1">
-                                AI Voice Agent + WhatsApp que responde todas nuestras llamadas, educa y califica leads, y agenda citas con Javier. 24/7.
+                                AI Voice Agent que responde todas nuestras llamadas, educa y califica leads, y agenda citas con Javier. 24/7 integrando voz, email, calendario y CRM.
                             </p>
                             <a
                                 href="tel:+19546068076"
