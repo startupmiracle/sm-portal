@@ -1095,23 +1095,31 @@
 
 <script>
   let currentSlide = 0;
+  let isAnimating = false;
   const slides = document.querySelectorAll('.slide');
   const totalSlides = slides.length;
 
   function goToSlide(n) {
-    if (n < 0 || n >= totalSlides) return;
-    const prev = slides[currentSlide];
-    const next = slides[n];
-    prev.classList.remove('active');
-    prev.classList.add(n > currentSlide ? 'exit-left' : '');
-    setTimeout(() => prev.classList.remove('exit-left'), 500);
-    next.classList.add('active');
+    if (n < 0 || n >= totalSlides || n === currentSlide || isAnimating) return;
+    isAnimating = true;
+    const goingForward = n > currentSlide;
+
+    // Remove all transition classes from every slide first
+    slides.forEach(s => {
+      s.classList.remove('active', 'exit-left');
+    });
+
+    // Activate the target slide
+    slides[n].classList.add('active');
+
     currentSlide = n;
     document.getElementById('slideCounter').textContent = `${n + 1} / ${totalSlides}`;
     document.getElementById('prevBtn').disabled = n === 0;
     document.getElementById('nextBtn').disabled = n === totalSlides - 1;
     document.getElementById('progressBar').style.width = `${((n + 1) / totalSlides) * 100}%`;
-    animateSlide(next);
+    animateSlide(slides[n]);
+
+    setTimeout(() => { isAnimating = false; }, 300);
   }
 
   function nextSlide() { goToSlide(currentSlide + 1); }
