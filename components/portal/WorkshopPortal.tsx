@@ -703,7 +703,7 @@ function SetupGuideTab() {
                             After — 31 skills + 12 connectors ready
                         </div>
                         <Card className="overflow-hidden border-emerald-200">
-                            <img
+                            <ZoomImage
                                 src="/images/claude-plugin-after.jpg"
                                 alt="Small Business plugin installed — 31 skills and 12 connectors"
                                 className="w-full"
