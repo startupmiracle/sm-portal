@@ -611,7 +611,30 @@ function SetupGuideTab() {
         <div className="flex gap-6">
             {/* Main content */}
             <div className="flex-1 min-w-0 space-y-8">
+
+            {/* What is Claude Cowork? */}
             <div>
+                <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>
+                    What is Claude Cowork?
+                </h2>
+                <p className="text-sm text-zinc-500 mt-1 max-w-xl">
+                    Cowork is Claude&apos;s collaborative workspace — think of it as a shared office where you and AI work side by side on real tasks, not just chat.
+                </p>
+            </div>
+
+            <div className="relative w-full overflow-hidden rounded-2xl border border-zinc-200 shadow-sm" style={{ paddingBottom: "56.25%" }}>
+                <iframe
+                    className="absolute inset-0 w-full h-full"
+                    src="https://www.youtube.com/embed/Lbml7IuGJYw?si=uxRYR3b7ov3xu0yW"
+                    title="What is Claude Cowork?"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                />
+            </div>
+
+            {/* Setup Guide: Skills & Plugins */}
+            <div className="pt-4">
                 <h2 className="text-2xl font-semibold text-zinc-900" style={{ fontFamily: "var(--font-heading)" }}>
                     Setup Guide: Skills &amp; Plugins
                 </h2>
