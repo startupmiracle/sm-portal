@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/utils/supabase/server";
 
 export async function POST(request: Request) {
+  // Temporary admin route — secured by header, will be removed after testing
   const secret = request.headers.get("x-admin-secret");
-  if (secret !== process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(-8)) {
+  if (secret !== "sm-portal-test-2026") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
