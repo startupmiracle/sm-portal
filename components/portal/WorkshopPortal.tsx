@@ -421,19 +421,25 @@ function ProfileTab({ lead, enriched, fullName }: { lead: WorkshopLead; enriched
                         <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full -mr-8 -mt-8" />
                         <CardContent className="p-6">
                             <LayoutDashboard className="w-8 h-8 text-violet-600 mb-3" />
-                            <h3 className="font-semibold text-zinc-900 text-lg">AI Assessment</h3>
+                            <h3 className="font-semibold text-zinc-900 text-lg">AI Assessment &amp; Discovery Pack</h3>
                             <p className="text-sm text-zinc-600 mt-2 leading-relaxed">
-                                The foundation to grow your business with AI. We audit every process, score your automation readiness, and deliver a prioritized roadmap.
+                                The foundational step before any AI can work for you. We audit your business, score every process for automation readiness, and hand you a clear roadmap — so you invest in what actually moves the needle.
                             </p>
                             <div className="mt-3 text-xs text-zinc-700 space-y-1">
                                 <div className="font-medium text-zinc-900">What&apos;s included:</div>
                                 <ul className="space-y-1 text-zinc-600">
                                     <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Full business process audit through an AI lens</li>
                                     <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Automation readiness scorecard + prioritized roadmap</li>
-                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Professional website (main page, automated lead intake, 5 blog articles featuring your services)</li>
-                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Google My Business profile setup</li>
-                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>Custom URL + free hosting included</li>
+                                    <li className="flex items-start gap-1.5"><span className="text-violet-500 mt-0.5">&#10003;</span>30/60/90 day execution plan tailored to your business</li>
                                 </ul>
+                            </div>
+                            <div className="mt-3 p-2.5 bg-violet-50 border border-violet-200 rounded-lg">
+                                <div className="text-xs font-semibold text-violet-800 flex items-center gap-1.5">
+                                    <Sparkles className="w-3 h-3" /> Bonus: Professional Website
+                                </div>
+                                <p className="text-[11px] text-violet-600 mt-1 leading-relaxed">
+                                    No website, or one that&apos;s not working for you? We build you a real one — main page, automated lead intake, 5 SEO blog articles, Google My Business profile, custom URL, and free hosting. We set you up for success, not rework on something that doesn&apos;t convert.
+                                </p>
                             </div>
                             <div className="mt-4 flex items-baseline gap-2">
                                 <span className="text-2xl font-bold text-zinc-900">$1,500</span>
