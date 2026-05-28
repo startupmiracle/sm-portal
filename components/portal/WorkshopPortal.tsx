@@ -33,6 +33,8 @@ import {
     Presentation,
     Maximize2,
     Minimize2,
+    HelpCircle,
+    Mail,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -72,19 +74,20 @@ const COLOR_MAP: Record<string, { bg: string; text: string; border: string }> = 
     indigo: { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200" },
 };
 
-type Tab = "deck" | "profile" | "intelligence" | "skills" | "setup" | "tools" | "assessment";
+type Tab = "deck" | "profile" | "intelligence" | "skills" | "setup" | "tools" | "assessment" | "questions";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "deck", label: "Slide Deck", icon: <Presentation className="w-4 h-4" /> },
     { id: "profile", label: "Your Profile", icon: <User className="w-4 h-4" /> },
     { id: "intelligence", label: "Intelligence", icon: <Sparkles className="w-4 h-4" /> },
     { id: "assessment", label: "Self-Assessment", icon: <ClipboardList className="w-4 h-4" /> },
+    { id: "questions", label: "Questions?", icon: <HelpCircle className="w-4 h-4" /> },
     { id: "setup", label: "Setup Guide", icon: <BookOpen className="w-4 h-4" /> },
     { id: "skills", label: "Skills Library", icon: <Download className="w-4 h-4" /> },
     { id: "tools", label: "Recommended Tools", icon: <Wrench className="w-4 h-4" /> },
 ];
 
-const VALID_TABS = new Set<string>(["deck", "profile", "intelligence", "skills", "setup", "tools", "assessment"]);
+const VALID_TABS = new Set<string>(["deck", "profile", "intelligence", "skills", "setup", "tools", "assessment", "questions"]);
 
 export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
     const [activeTab, setActiveTabState] = useState<Tab>("deck");
@@ -308,6 +311,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                         />
                     )}
                     {activeTab === "deck" && <DeckTab />}
+                    {activeTab === "questions" && <QuestionsTab />}
                     {activeTab === "setup" && <SetupGuideTab />}
                     {activeTab === "tools" && <ToolsTab onNavigate={setActiveTab} />}
                     {activeTab === "assessment" && (
@@ -395,6 +399,51 @@ function DeckTab() {
             <p className="text-xs text-gray-400 text-center">
                 Tip: haz clic en &quot;Presentation Mode&quot; para pantalla completa, o presiona Esc para salir.
             </p>
+        </div>
+    );
+}
+
+function QuestionsTab() {
+    const email = "javier@startupmiracle.com";
+    const [copied, setCopied] = useState(false);
+
+    const copyEmail = async () => {
+        await navigator.clipboard.writeText(email);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="max-w-lg mx-auto py-8 space-y-6 text-center">
+            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto">
+                <Mail className="w-8 h-8 text-emerald-600" />
+            </div>
+            <div>
+                <h2 className="text-2xl font-bold text-gray-900">Questions?</h2>
+                <p className="text-gray-500 mt-2 text-sm leading-relaxed">
+                    Si tienes alguna pregunta, duda o inquietud sobre el workshop, escríbeme directamente. Estoy aquí para ayudarte.
+                </p>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 space-y-4">
+                <p className="text-sm text-gray-500 font-medium">Javier Aguilera &mdash; Fundador, Startup Miracle</p>
+                <div className="flex items-center justify-center gap-3">
+                    <a
+                        href={`mailto:${email}?subject=Workshop Question — Claude SMB`}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                        <Mail className="w-4 h-4" />
+                        Send Email
+                    </a>
+                    <button
+                        onClick={copyEmail}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 transition-colors"
+                    >
+                        {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                        {copied ? "Copied!" : "Copy Email"}
+                    </button>
+                </div>
+                <p className="text-xs text-gray-400">{email}</p>
+            </div>
         </div>
     );
 }
