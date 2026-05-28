@@ -14,6 +14,7 @@ import {
     LogOut,
     TrendingUp,
     PenTool,
+    Phone,
     PhoneOff,
     FileText,
     MessageSquare,
@@ -438,7 +439,7 @@ function DeckTab() {
                                 href="tel:+19546068076"
                                 className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
                             >
-                                <PhoneOff className="w-4 h-4" />
+                                <Phone className="w-4 h-4" />
                                 Llama al (954) 606-8076
                             </a>
                         </div>
@@ -466,7 +467,7 @@ function DeckTab() {
                                 href="tel:+17864326524"
                                 className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
                             >
-                                <PhoneOff className="w-4 h-4" />
+                                <Phone className="w-4 h-4" />
                                 Llama al (786) 432-6524
                             </a>
                         </div>
