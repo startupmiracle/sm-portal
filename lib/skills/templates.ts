@@ -162,19 +162,43 @@ export const DISCOVERY_QUESTIONS: { key: string; label: string; description: str
 
 const TECH_STACK_REFERENCE = `## Recommended tech stack (proven by Startup Miracle)
 
-| Layer | Tool | Why |
-|---|---|---|
-| AI master brain | Claude (Opus / Sonnet) + OpenAI as backup | Best reasoning, best skills system |
-| Virtual assistant | Hermes | Persistent AI assistant in Telegram/WhatsApp/Slack with long-term memory |
-| Project management | Linear (or GitHub Projects) | Humans + AI agents share context, long-term memory |
-| Website | Next.js on Vercel + Cloudflare (DNS + bot protection) | Fast, secure, easy AI integration |
-| Database / CRM | Supabase (preferred) or HubSpot | Supabase = freedom to scale AI capabilities |
-| Email ops | Resend (transactional) + Gmail (human) | Deliverability + reply continuity |
-| Payments | Stripe | Payment links, subscriptions, webhooks |
-| Meetings + context | Granola | Auto-transcribed meetings feed Claude's long-term memory |
-| Marketing analytics | Google Analytics + Meta Business Manager | Attribution + retargeting |
-| Secrets / passwords | Bitwarden | Central hub for humans AND AI agents |
+| Layer | Tool | Setup | MCP Available |
+|---|---|---|---|
+| AI master brain | Claude (Opus / Sonnet) | claude.ai | N/A — this is the brain |
+| AI skills | Claude Skills for SMBs plugin | Customize → Plugins → Small Business | Built-in |
+| Virtual assistant | Hermes Agent | hermes-agent.nousresearch.com → deploy on Azure/Telegram | Via API |
+| Project management | Linear | linear.app | Yes — \`claude mcp add linear\` |
+| Website + hosting | Next.js on Vercel | vercel.com (free tier) | Yes — Vercel MCP |
+| DNS + security | Cloudflare | cloudflare.com (free tier) | Via API |
+| Database / CRM | Supabase | supabase.com (free tier) | Via API |
+| Email (transactional) | Resend | resend.com | Via API |
+| Payments | Stripe | stripe.com | Yes — Stripe MCP |
+| Banking | Mercury | mercury.com (Stripe integrated) | Via API |
+| Communications | Slack | slack.com | Yes — Slack MCP |
+| Communications | Telegram | telegram.org (BotFather for Hermes) | Via Bot API |
+| Meetings + context | Granola | granola.ai | Feed transcripts to Claude |
+| Creative / video | HeyGen + Higgsfield | heygen.com / higgsfield.ai | Yes — both have MCP |
+| Passwords + secrets | Bitwarden | bitwarden.com | Store API keys here |
+
+## How this stack works together
+
+1. **Bitwarden** stores all your API keys and credentials in one vault.
+2. **Claude** is the brain — install the SMB plugin for 31 ready-made skills.
+3. When you answer "no" or "unsure" on a discovery question, the relevant skill activates:
+   - No website? → Use Claude Code to scaffold on Vercel + Cloudflare
+   - No CRM? → Claude sets up Supabase tables + lead intake forms
+   - No follow-up system? → Claude configures Resend email sequences
+   - No fast response? → Claude + Hermes Agent handle inbound 24/7
+   - No content? → Claude drafts blog posts, social, and video briefs
+   - No referral system? → Claude builds Stripe referral links
+4. **Claude Code** connects tools via MCP: \`claude mcp add <tool>\` + paste API key from Bitwarden.
+5. **Hermes Agent** runs 24/7 on Azure ($0 for 12 months) or Telegram for persistent tasks.
+6. **Linear** tracks your 30/60/90 plan — Claude creates tickets, you execute.
+
+> **When in doubt, ask Claude Code to set up any tool on this list.**
+> Your skills already know the stack. Just say: "Set up my CRM" or "Connect Stripe" and Claude will walk you through it.
 `;
+
 
 function joinList(items: string[]): string {
     return items.filter(Boolean).map((s) => `- ${s}`).join("\n");
@@ -210,6 +234,43 @@ description: ${description}
 ---`;
 }
 
+function buildGapActions(lead: WorkshopLead): string {
+    const answers = lead.discovery_answers || {};
+    const gaps: string[] = [];
+
+    if (answers.website === "no" || answers.website === "unsure")
+        gaps.push("- **No website** → Ask Claude Code: \"Scaffold a Next.js site on Vercel with Cloudflare DNS for my business.\" Free hosting included.");
+    if (answers.opt_in_form === "no" || answers.opt_in_form === "unsure")
+        gaps.push("- **No opt-in form** → Ask Claude Code: \"Add a lead capture form to my website that saves to Supabase.\" 3 fields max: name, email, phone.");
+    if (answers.blog === "no" || answers.blog === "unsure")
+        gaps.push("- **No blog/content** → Use the `publish-content` skill: \"Write a blog post about [your top service].\" Claude produces the post + social repurpose pack.");
+    if (answers.crm === "no" || answers.crm === "unsure")
+        gaps.push("- **No CRM** → Ask Claude Code: \"Set up a Supabase CRM with leads table, contacts, and deal stages.\" Then connect it via MCP: `claude mcp add supabase`.");
+    if (answers.crm_fast_response === "no" || answers.crm_fast_response === "unsure")
+        gaps.push("- **Slow lead response** → Use the `answer-faster` skill + set up Resend for instant auto-replies. Ask Claude: \"Configure Resend email for new lead notifications.\"");
+    if (answers.crm_followup === "no" || answers.crm_followup === "unsure")
+        gaps.push("- **No follow-up system** → Use the `more-sales` skill to build a follow-up cadence. Ask Claude: \"Create a 4-touch follow-up sequence in Resend.\"");
+    if (answers.offer_clarity === "no" || answers.offer_clarity === "unsure")
+        gaps.push("- **Offer not clear** → Use the `publish-content` skill: \"Rewrite my homepage hero section so a 10-year-old understands what I sell.\"");
+    if (answers.pricing_alignment === "no" || answers.pricing_alignment === "unsure")
+        gaps.push("- **Pricing misaligned** → Use the `quote-faster` skill: \"Analyze my pricing vs competitors in [industry] and suggest a 3-tier model.\"");
+    if (answers.backend_offer === "no" || answers.backend_offer === "unsure")
+        gaps.push("- **No backend offer** → Ask Claude: \"Design a recurring subscription or retainer offer for my existing customers.\" Then create the Stripe payment link.");
+    if (answers.referral_system === "no" || answers.referral_system === "unsure")
+        gaps.push("- **No referral system** → Ask Claude: \"Build a Stripe referral link with a 10% discount code and a shareable landing page.\"");
+
+    if (gaps.length === 0) return "";
+
+    return `### 🔧 Your gaps → what to ask Claude next
+
+Based on your self-assessment, here's exactly what to do for each gap:
+
+${gaps.join("\n")}
+
+> **Setup workflow:** Create account → store API key in Bitwarden → tell Claude Code: \`claude mcp add <tool>\` → paste key → done.
+`;
+}
+
 function buildFooter(lead: WorkshopLead): string {
     return `
 ---
@@ -221,10 +282,13 @@ ${leadContext(lead)}
 ### Your discovery answers
 ${formatDiscovery(lead)}
 
+${buildGapActions(lead)}
+
 ${TECH_STACK_REFERENCE}
 
 > Built for ${lead.first_name || "you"} at the Claude SMB Workshop · ${new Date().toISOString().slice(0, 10)}
 > Questions: javier@startupmiracle.com
+> Portal: https://portal.startupmiracle.com
 `;
 }
 
