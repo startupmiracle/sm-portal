@@ -419,11 +419,9 @@ function DeckTab() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* Speed-2-Lead — SM */}
                     <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
-                        <Image
+                        <ZoomImage
                             src="/sm-workshop-assets/demo-s2l.png"
                             alt="Speed To Lead System — Startup Miracle"
-                            width={800}
-                            height={450}
                             className="w-full h-auto"
                         />
                         <div className="p-4">
@@ -447,11 +445,9 @@ function DeckTab() {
 
                     {/* Business Concierge — Francisca */}
                     <div className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-sm">
-                        <Image
+                        <ZoomImage
                             src="/sm-workshop-assets/demo-francisca.jpg"
                             alt="Business Concierge System — Francisca Restaurant"
-                            width={800}
-                            height={450}
                             className="w-full h-auto"
                         />
                         <div className="p-4">
