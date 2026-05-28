@@ -165,7 +165,7 @@ const TECH_STACK_REFERENCE = `## Recommended tech stack (proven by Startup Mirac
 | Layer | Tool | Why |
 |---|---|---|
 | AI master brain | Claude (Opus / Sonnet) + OpenAI as backup | Best reasoning, best skills system |
-| Virtual assistant | Hermes | Human-in-the-loop for things AI shouldn't touch yet |
+| Virtual assistant | Hermes | Persistent AI assistant in Telegram/WhatsApp/Slack with long-term memory |
 | Project management | Linear (or GitHub Projects) | Humans + AI agents share context, long-term memory |
 | Website | Next.js on Vercel + Cloudflare (DNS + bot protection) | Fast, secure, easy AI integration |
 | Database / CRM | Supabase (preferred) or HubSpot | Supabase = freedom to scale AI capabilities |

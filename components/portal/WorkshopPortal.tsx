@@ -601,7 +601,7 @@ const RECOMMENDED_TOOLS: { name: string; description: string; url: string; cta: 
     { name: "Linear", description: "Project management that humans and AI agents share. Track your 30/60/90 plan, assign tasks to yourself or AI, weekly reviews built in.", url: "https://linear.app", cta: "Get Linear", color: "indigo", icon: "kanban" },
     { name: "Granola", description: "AI meeting notes. Every call auto-transcribed and summarized. Feed transcripts to Claude for long-term memory across sessions.", url: "https://granola.ai", cta: "Get Granola", color: "violet", icon: "mic" },
     { name: "Supabase", description: "Your database and CRM in one. Postgres, auth, realtime — the backbone for lead tracking, customer data, and AI agent memory.", url: "https://supabase.com", cta: "Get Supabase", color: "emerald", icon: "database" },
-    { name: "Hermes Agent", description: "Your virtual assistant layer. Human-in-the-loop for tasks AI shouldn't handle alone — scheduling, follow-ups, escalations.", url: "https://startupmiracle.com", cta: "Learn More", color: "fuchsia", icon: "bot" },
+    { name: "Hermes Agent", description: "A persistent, self-improving AI assistant that lives in your Telegram, WhatsApp, browser, or Slack. Solves complex problems, finishes repetitive tasks, and gets smarter over time with long-term memory, integrations, and self-improvement loops.", url: "https://startupmiracle.com", cta: "Learn More", color: "fuchsia", icon: "bot" },
 ];
 
 function SetupGuideTab() {
