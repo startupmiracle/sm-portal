@@ -27,6 +27,7 @@ import {
     ChevronDown,
     ChevronUp,
     ExternalLink,
+    Globe,
     Menu,
     X,
 } from "lucide-react";
@@ -237,15 +238,27 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                         </Link>
                     </div>
 
-                    {/* Sign out — pinned bottom */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-zinc-100 bg-white">
-                        <a
-                            href="/auth/signout"
-                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-zinc-500 hover:bg-red-50 hover:text-red-600 transition-colors"
-                        >
-                            <LogOut className="w-4 h-4" />
-                            Sign out
-                        </a>
+                    {/* Footer — pinned bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-white">
+                        <div className="mx-4 border-t border-zinc-100" />
+                        <div className="p-4 space-y-1">
+                            <a
+                                href="https://startupmiracle.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+                            >
+                                <Globe className="w-4 h-4" />
+                                Startup Miracle
+                            </a>
+                            <a
+                                href="/auth/signout"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-zinc-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                            >
+                                <LogOut className="w-4 h-4" />
+                                Sign out
+                            </a>
+                        </div>
                     </div>
                 </aside>
 
