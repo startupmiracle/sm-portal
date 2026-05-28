@@ -8,8 +8,12 @@ import { Sparkles, LogOut, Calendar, Users, Building2 } from "lucide-react";
 const SM_LOGO_URL =
   "https://res.cloudinary.com/dy7cv4bih/image/upload/v1756175129/SM_-_logo-icon-transp_fhdqbi.png";
 
-const WORKSHOP_NAMES: Record<string, { name: string; partner: string }> = {
-  "claude-smb-area": { name: "Claude SMB Workshop", partner: "Area Centre" },
+const WORKSHOP_META: Record<string, { name: string; partner: string; image: string }> = {
+  "claude-smb-area": {
+    name: "Claude SMB Workshop",
+    partner: "Area Centre",
+    image: "https://res.cloudinary.com/dy7cv4bih/image/upload/v1779932103/SM-Area-workshop-AI_for_SMB-Claude_c8rfvc.png",
+  },
 };
 
 export default async function WorkshopsPage() {
@@ -28,11 +32,12 @@ export default async function WorkshopsPage() {
   const workshops = leads?.length
     ? leads.map((lead) => {
         const slug = lead.workshop_slug || "claude-smb-area";
-        const meta = WORKSHOP_NAMES[slug] || { name: "Workshop", partner: "" };
+        const meta = WORKSHOP_META[slug] || { name: "Workshop", partner: "", image: "" };
         return {
           slug,
           name: meta.name,
           partner: meta.partner,
+          image: meta.image,
           date: lead.created_at
             ? new Date(lead.created_at).toLocaleDateString("en-US", {
                 month: "long",
@@ -103,39 +108,54 @@ export default async function WorkshopsPage() {
           <div className="grid gap-4">
             {workshops.map((w) => (
               <Link key={w.slug} href={`/workshops/${w.slug}`}>
-                <Card className="border-zinc-200 hover:border-emerald-200 hover:shadow-md transition-all cursor-pointer">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg">{w.name}</CardTitle>
-                        <CardDescription className="mt-1">
-                          {w.partner && `${w.partner} · `}{w.date}
-                        </CardDescription>
+                <Card className="border-zinc-200 hover:border-emerald-200 hover:shadow-md transition-all cursor-pointer overflow-hidden">
+                  <div className="flex flex-col sm:flex-row">
+                    {w.image && (
+                      <div className="sm:w-48 sm:flex-shrink-0">
+                        <Image
+                          src={w.image}
+                          alt={w.name}
+                          width={192}
+                          height={192}
+                          className="w-full h-40 sm:h-full object-cover"
+                        />
                       </div>
-                      <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                        Enrolled
-                      </Badge>
+                    )}
+                    <div className="flex-1">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <CardTitle className="text-lg">{w.name}</CardTitle>
+                            <CardDescription className="mt-1">
+                              {w.partner && `${w.partner} · `}{w.date}
+                            </CardDescription>
+                          </div>
+                          <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                            Enrolled
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="flex items-center gap-4 text-sm text-zinc-500">
+                          {w.company && (
+                            <span className="flex items-center gap-1.5">
+                              <Building2 className="w-3.5 h-3.5" />
+                              {w.company}
+                            </span>
+                          )}
+                          <span className="flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5" />
+                            {w.date}
+                          </span>
+                          {w.aiStage && (
+                            <Badge variant="outline" className="text-xs">
+                              {w.aiStage}
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
                     </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center gap-4 text-sm text-zinc-500">
-                      {w.company && (
-                        <span className="flex items-center gap-1.5">
-                          <Building2 className="w-3.5 h-3.5" />
-                          {w.company}
-                        </span>
-                      )}
-                      <span className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5" />
-                        {w.date}
-                      </span>
-                      {w.aiStage && (
-                        <Badge variant="outline" className="text-xs">
-                          {w.aiStage}
-                        </Badge>
-                      )}
-                    </div>
-                  </CardContent>
+                  </div>
                 </Card>
               </Link>
             ))}
