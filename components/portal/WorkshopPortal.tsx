@@ -747,10 +747,21 @@ function IntelligenceTab({ enriched }: { enriched: Record<string, string | numbe
                                 return (
                                     <div className="space-y-4">
                                         {recs.map((rec: { title?: string; tool?: string; description?: string; weekend_plan?: string }, i: number) => (
-                                            <div key={i}>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h4 className="text-sm font-semibold text-zinc-900">{rec.title}</h4>
-                                                    {rec.tool && <Badge className="bg-violet-50 text-violet-700 border-violet-200 text-[10px]">{rec.tool}</Badge>}
+                                            <div key={i} className="space-y-2">
+                                                <div className="space-y-1.5">
+                                                    <h4 className="text-sm font-semibold leading-snug text-zinc-900">{rec.title}</h4>
+                                                    {rec.tool && (
+                                                        <div className="flex flex-wrap gap-1.5">
+                                                            {rec.tool.split(/\s*\+\s*/).filter(Boolean).map((tool) => (
+                                                                <Badge
+                                                                    key={tool}
+                                                                    className="h-auto max-w-full whitespace-normal break-words border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] leading-snug text-violet-700"
+                                                                >
+                                                                    {tool}
+                                                                </Badge>
+                                                            ))}
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <p className="text-sm text-zinc-600 leading-relaxed">{rec.description}</p>
                                                 {rec.weekend_plan && (
