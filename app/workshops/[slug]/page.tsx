@@ -2,13 +2,20 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import WorkshopPortal from "@/components/portal/WorkshopPortal";
 import type { WorkshopLead } from "@/lib/skills/templates";
+import { getWorkshop, DEFAULT_WORKSHOP_SLUG } from "@/lib/workshops";
 
 export default async function WorkshopDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  await params;
+  const { slug } = await params;
+
+  // Workshops that haven't launched yet are preview-only — no classroom access.
+  if (getWorkshop(slug).comingSoon) {
+    redirect("/workshops");
+  }
+
   const supabase = await createClient();
 
   const {
@@ -17,13 +24,18 @@ export default async function WorkshopDetailPage({
 
   if (!user) redirect("/login");
 
-  const { data: lead, error } = await supabase
+  // One email can be enrolled in multiple workshops — pick the row for THIS slug.
+  const { data: leads } = await supabase
     .from("leads_workshop")
     .select("*")
     .ilike("email", user.email || "")
-    .maybeSingle();
+    .order("created_at", { ascending: false });
 
-  if (error || !lead) {
+  const lead = (leads || []).find(
+    (l) => (l.workshop_slug || DEFAULT_WORKSHOP_SLUG) === slug
+  );
+
+  if (!lead) {
     redirect("/workshops");
   }
 
@@ -71,5 +83,5 @@ export default async function WorkshopDetailPage({
     },
   };
 
-  return <WorkshopPortal lead={enrichedLead} />;
+  return <WorkshopPortal lead={enrichedLead} slug={slug} />;
 }

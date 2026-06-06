@@ -49,6 +49,7 @@ import {
     type DiscoveryValue,
 } from "@/lib/skills/templates";
 import { createClient } from "@/utils/supabase/client";
+import { getWorkshop, type WorkshopConfig } from "@/lib/workshops";
 import {
     Label,
     PolarGrid,
@@ -90,7 +91,8 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 
 const VALID_TABS = new Set<string>(["deck", "profile", "intelligence", "skills", "setup", "tools", "assessment", "questions"]);
 
-export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
+export default function WorkshopPortal({ lead, slug }: { lead: WorkshopLead; slug?: string }) {
+    const workshop = getWorkshop(slug);
     const [activeTab, setActiveTabState] = useState<Tab>("deck");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -172,7 +174,7 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                         <Image src={SM_LOGO_URL} alt="Startup Miracle" width={32} height={32} className="rounded-lg" />
                         <div>
                             <div className="text-sm font-semibold text-zinc-900">Workshop Portal</div>
-                            <div className="text-xs text-zinc-500">Claude SMB Workshop</div>
+                            <div className="text-xs text-zinc-500">{workshop.name}</div>
                         </div>
                     </div>
                     <span className="text-sm text-zinc-500 hidden sm:block">{lead.email}</span>
@@ -322,7 +324,9 @@ export default function WorkshopPortal({ lead }: { lead: WorkshopLead }) {
                             onCopy={copySkill}
                         />
                     )}
-                    {activeTab === "deck" && <DeckTab />}
+                    {activeTab === "deck" && (
+                        workshop.comingSoon ? <ComingSoonDeck workshop={workshop} /> : <DeckTab />
+                    )}
                     {activeTab === "questions" && <QuestionsTab />}
                     {activeTab === "setup" && <SetupGuideTab />}
                     {activeTab === "tools" && <ToolsTab onNavigate={setActiveTab} />}
@@ -470,6 +474,44 @@ function DeckTab() {
                     </div>
                 </div>
             </div>
+        </div>
+    );
+}
+
+function ComingSoonDeck({ workshop }: { workshop: WorkshopConfig }) {
+    return (
+        <div className="space-y-4">
+            <div>
+                <h2 className="text-xl font-bold text-gray-900">Slide Deck</h2>
+                <p className="text-sm text-gray-500 mt-1">{workshop.name}</p>
+            </div>
+
+            {/* Hero image placeholder */}
+            <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-sm" style={{ aspectRatio: "16/9" }}>
+                <Image
+                    src={workshop.deckImage}
+                    alt={workshop.name}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 768px"
+                    className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-6">
+                    <Badge className="bg-emerald-500/90 text-white border-0 mb-3">
+                        <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Coming Soon
+                    </Badge>
+                    <h3 className="text-2xl font-bold text-white drop-shadow">Slide Deck Coming Soon</h3>
+                    <p className="mt-2 text-sm text-white/90 max-w-md drop-shadow">
+                        The presentation for this workshop is being prepared. Check back here soon &mdash; your slides
+                        will appear in this tab.
+                    </p>
+                </div>
+            </div>
+            <p className="text-xs text-gray-400 text-center">
+                Questions in the meantime? Email{" "}
+                <a href="mailto:javier@startupmiracle.com" className="underline hover:text-gray-600">
+                    javier@startupmiracle.com
+                </a>
+            </p>
         </div>
     );
 }
