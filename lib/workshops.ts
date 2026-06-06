@@ -46,6 +46,14 @@ export const WORKSHOPS: Record<string, WorkshopConfig> = {
     deckImage: "/sm-workshop-assets/workshop-digital-twin.jpg",
     comingSoon: true,
   },
+  "ugc-videos-ai": {
+    slug: "ugc-videos-ai",
+    name: "Mastering UGC Videos with Claude, ChatGPT & Higgsfield",
+    partner: "Startup Miracle",
+    image: "/sm-workshop-assets/workshop-ugc.jpg",
+    deckImage: "/sm-workshop-assets/workshop-ugc.jpg",
+    comingSoon: true,
+  },
 };
 
 export function getWorkshop(slug: string | null | undefined): WorkshopConfig {
