@@ -50,8 +50,9 @@ Home (`/`) redirects to `/workshops`.
 - Shared **`PortalShell`** left nav: Workshops · **Referrals** · Glossary
 - Workshop detail pages still use their own in-workshop sidebar tabs
 
-### Referrals (`/referrals`) — mock UI
+### Referrals (`/referrals`) — mock UI (**auth required**)
 
+- **Registered portal users only** — same session gate as Workshops / Glossary (unauthenticated → `/login`)
 - How-it-works, credit stats, share link/code (copy), refer form, private mini-CRM table, program rules
 - Local mock data only — not wired to Supabase/Stripe yet (see Roadmap)
 - **PMO progress:** [PROGRESS.md](./PROGRESS.md)

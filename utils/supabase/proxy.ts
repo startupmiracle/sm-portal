@@ -1,31 +1,26 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+/**
+ * Session + auth gate for the multiuser portal.
+ * All app pages require a registered Supabase user except /login and /auth/*.
+ */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
 
-  // Public mock surface while affiliate backend is not wired
-  const isReferralsMock =
-    request.nextUrl.pathname === "/referrals" ||
-    request.nextUrl.pathname.startsWith("/referrals/");
-
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Allow referrals mock without Supabase when local env is incomplete
-  if ((!supabaseUrl || !supabaseAnonKey) && isReferralsMock) {
-    return supabaseResponse;
-  }
+  const isPublicPath =
+    request.nextUrl.pathname.startsWith("/login") ||
+    request.nextUrl.pathname.startsWith("/auth") ||
+    request.nextUrl.pathname.startsWith("/api/");
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    // Missing config: send everything except public paths to login error-free
-    if (
-      !request.nextUrl.pathname.startsWith("/login") &&
-      !request.nextUrl.pathname.startsWith("/auth") &&
-      !request.nextUrl.pathname.startsWith("/api/")
-    ) {
+    // Misconfigured env: never expose app content
+    if (!isPublicPath) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       return NextResponse.redirect(url);
@@ -56,23 +51,23 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Redirect unauthenticated users to login (except /login and /auth routes)
-  if (
-    !user &&
-    !isReferralsMock &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    !request.nextUrl.pathname.startsWith("/api/")
-  ) {
+  // Registered portal users only — workshops, referrals, glossary, etc.
+  if (!user && !isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    // Preserve destination so users land on Referrals after sign-in
+    if (request.nextUrl.pathname !== "/") {
+      url.searchParams.set("next", request.nextUrl.pathname);
+    }
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from login
   if (user && request.nextUrl.pathname.startsWith("/login")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/workshops";
+    const next = request.nextUrl.searchParams.get("next");
+    url.pathname =
+      next && next.startsWith("/") && !next.startsWith("//") ? next : "/workshops";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

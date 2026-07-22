@@ -2,15 +2,22 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Mail, Lock, Loader2, CheckCircle2, Sparkles, ArrowRight } from "lucide-react";
 
 const SM_LOGO_URL =
   "https://res.cloudinary.com/dy7cv4bih/image/upload/v1756175129/SM_-_logo-icon-transp_fhdqbi.png";
 
+function safeNextPath(raw: string | null): string {
+  if (raw && raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  return "/workshops";
+}
+
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = safeNextPath(searchParams.get("next"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<"password" | "magic">("password");
@@ -35,7 +42,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/workshops");
+    router.push(nextPath);
   };
 
   const handleMagicLink = async (e: React.FormEvent) => {
@@ -44,10 +51,12 @@ export default function LoginPage() {
     setError(null);
 
     const supabase = createClient();
+    const callback = new URL(`${window.location.origin}/auth/callback`);
+    callback.searchParams.set("next", nextPath);
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim().toLowerCase(),
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: callback.toString(),
       },
     });
 

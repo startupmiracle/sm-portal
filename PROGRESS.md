@@ -13,6 +13,7 @@
 | 2026-07 | Product README | Replaced create-next-app boilerplate; systems map, env, roadmap |
 | 2026-07 | `PortalShell` | Global left nav: **Workshops · Referrals · Glossary** |
 | 2026-07 | `/referrals` mock | How-it-works, credit stats, share kit, refer form, private mini-CRM table, rules |
+| 2026-07-22 | **Auth gate on `/referrals`** | Same as workshops/glossary — **registered Supabase users only** (removed public mock bypass) |
 | 2026-07 | Workshops + Glossary | Wrapped in `PortalShell` for consistent navigation |
 | Prior | Workshops experience | `leads_workshop`, skills, deck, glossary, auth |
 
@@ -49,7 +50,7 @@ npm run dev -- -p 3001
 # open http://localhost:3001/referrals
 ```
 
-Auth normally required via Supabase. Proxy may allow `/referrals` without session when env keys are missing (mock-only).
+**Auth required** for all portal pages including `/referrals`. Unauthenticated visitors are redirected to `/login?next=…`.
 
 ---
 
