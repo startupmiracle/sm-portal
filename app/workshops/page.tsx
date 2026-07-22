@@ -3,11 +3,9 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, LogOut, Calendar, Users, Building2, Clock } from "lucide-react";
+import { Sparkles, Calendar, Users, Building2, Clock } from "lucide-react";
 import { getWorkshop, WORKSHOPS, DEFAULT_WORKSHOP_SLUG } from "@/lib/workshops";
-
-const SM_LOGO_URL =
-  "https://res.cloudinary.com/dy7cv4bih/image/upload/v1756175129/SM_-_logo-icon-transp_fhdqbi.png";
+import { PortalShell } from "@/components/portal/PortalShell";
 
 type WorkshopCardData = {
   slug: string;
@@ -157,92 +155,71 @@ export default async function WorkshopsPage() {
     : [];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#faf9f5" }}>
-      <header className="border-b border-zinc-200 bg-white">
-        <div className="mx-auto max-w-4xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Image src={SM_LOGO_URL} alt="Startup Miracle" width={36} height={36} className="rounded-full" />
-            <div>
-              <div className="text-sm font-semibold text-zinc-900">Workshop Portal</div>
-              <div className="text-xs text-zinc-500">Startup Miracle</div>
-            </div>
+    <PortalShell title="Customer Portal" subtitle="Workshops">
+      <div className="mb-8">
+        <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-4">
+          <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Welcome back
+        </Badge>
+        <h1
+          className="text-3xl font-semibold text-zinc-900 tracking-tight"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Hey, {firstName}.
+        </h1>
+        <p className="mt-2 text-zinc-600">
+          Here are the workshops you&apos;re enrolled in. Click one to access your personalized portal.
+        </p>
+      </div>
+
+      {enrolled.length === 0 ? (
+        <Card className="border-dashed border-zinc-300">
+          <CardContent className="py-12 text-center">
+            <Users className="w-10 h-10 text-zinc-300 mx-auto mb-4" />
+            <p className="text-zinc-500">
+              No workshops found for {user?.email}. If you just registered, it
+              may take a few minutes to appear.
+            </p>
+            <p className="text-xs text-zinc-400 mt-2">
+              Questions? Email{" "}
+              <a href="mailto:javier@startupmiracle.com" className="underline">
+                javier@startupmiracle.com
+              </a>
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4">
+          {enrolled.map((w) => (
+            <WorkshopCardItem key={w.slug} w={w} />
+          ))}
+        </div>
+      )}
+
+      {upcoming.length > 0 && (
+        <div className="mt-12">
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="text-lg font-semibold text-zinc-900">Upcoming Workshops</h2>
+            <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200">
+              New
+            </Badge>
           </div>
-          <a
-            href="/auth/signout"
-            className="flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign out
-          </a>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <div className="mb-8">
-          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 mb-4">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> Welcome back
-          </Badge>
-          <h1
-            className="text-3xl font-semibold text-zinc-900 tracking-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Hey, {firstName}.
-          </h1>
-          <p className="mt-2 text-zinc-600">
-            Here are the workshops you&apos;re enrolled in. Click one to access your personalized portal.
+          <p className="text-sm text-zinc-500 mb-4 -mt-1">
+            A preview of what&apos;s next. These open up here over the coming days.
           </p>
-        </div>
-
-        {enrolled.length === 0 ? (
-          <Card className="border-dashed border-zinc-300">
-            <CardContent className="py-12 text-center">
-              <Users className="w-10 h-10 text-zinc-300 mx-auto mb-4" />
-              <p className="text-zinc-500">
-                No workshops found for {user?.email}. If you just registered, it
-                may take a few minutes to appear.
-              </p>
-              <p className="text-xs text-zinc-400 mt-2">
-                Questions? Email{" "}
-                <a href="mailto:javier@startupmiracle.com" className="underline">
-                  javier@startupmiracle.com
-                </a>
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
           <div className="grid gap-4">
-            {enrolled.map((w) => (
+            {upcoming.map((w) => (
               <WorkshopCardItem key={w.slug} w={w} />
             ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {upcoming.length > 0 && (
-          <div className="mt-12">
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="text-lg font-semibold text-zinc-900">Upcoming Workshops</h2>
-              <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200">
-                New
-              </Badge>
-            </div>
-            <p className="text-sm text-zinc-500 mb-4 -mt-1">
-              A preview of what&apos;s next. These open up here over the coming days.
-            </p>
-            <div className="grid gap-4">
-              {upcoming.map((w) => (
-                <WorkshopCardItem key={w.slug} w={w} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <footer className="border-t border-zinc-200 mt-12 pt-6 text-center text-xs text-zinc-400">
-          Powered by{" "}
-          <a href="https://startupmiracle.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-600">
-            Startup Miracle
-          </a>
-        </footer>
-      </main>
-    </div>
+      <footer className="border-t border-zinc-200 mt-12 pt-6 text-center text-xs text-zinc-400">
+        Powered by{" "}
+        <a href="https://startupmiracle.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-600">
+          Startup Miracle
+        </a>
+      </footer>
+    </PortalShell>
   );
 }

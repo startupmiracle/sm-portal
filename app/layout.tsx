@@ -19,9 +19,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Workshop Portal | Startup Miracle",
+  title: "Customer Portal | Startup Miracle",
   description:
-    "Your personalized AI workshop experience — skills, plans, and recommendations.",
+    "Workshops, referrals, and resources for Startup Miracle clients.",
 };
 
 export default function RootLayout({

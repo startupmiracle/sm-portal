@@ -47,8 +47,15 @@ Home (`/`) redirects to `/workshops`.
 
 ### UI shell
 
-- Left sidebar pattern already used inside workshop + glossary pages
-- **Planned:** global portal shell with **Referrals** nav item (see Roadmap)
+- Shared **`PortalShell`** left nav: Workshops · **Referrals** · Glossary
+- Workshop detail pages still use their own in-workshop sidebar tabs
+
+### Referrals (`/referrals`) — mock UI
+
+- How-it-works, credit stats, share link/code (copy), refer form, private mini-CRM table, program rules
+- Local mock data only — not wired to Supabase/Stripe yet (see Roadmap)
+- **PMO progress:** [PROGRESS.md](./PROGRESS.md)
+- **Business:** first affiliate conversion (WeCanIt / Pro) logged in [sm-ai-office affiliate PROGRESS](https://github.com/startupmiracle/sm-ai-office/blob/main/initiatives/affiliate-program/PROGRESS.md)
 
 ---
 
